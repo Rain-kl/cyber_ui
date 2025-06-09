@@ -5,8 +5,7 @@ export const API_CONFIG = {
 
     // 端点配置
     ENDPOINTS: {
-        STREAM_ANSWER: "/stream_answer", // 原有的后端代理端点
-        CHAT: "/chat", // 新的 OpenAI 聊天端点
+        CHAT: "/chat", // OpenAI 聊天端点
     },
 };
 
@@ -17,6 +16,5 @@ export const buildApiUrl = (endpoint: string): string => {
 
 // 导出常用的 API URLs
 export const API_URLS = {
-    STREAM_ANSWER: buildApiUrl(API_CONFIG.ENDPOINTS.STREAM_ANSWER),
     CHAT: buildApiUrl(API_CONFIG.ENDPOINTS.CHAT),
 };

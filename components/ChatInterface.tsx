@@ -40,15 +40,10 @@ export default function ChatInterface() {
             <ChatHeader />
           ) : (
             <div className="px-4 py-6">
-              {messages.map((message, index) => (
+              {messages.map((message) => (
                 <ChatMessage
                   key={message.id}
                   message={message}
-                  isStreaming={
-                    isLoading && 
-                    message.sender === 'assistant' && 
-                    index === messages.length - 1
-                  }
                   onRetry={
                     message.sender === 'assistant'
                       ? () => handleRetry(message.id)

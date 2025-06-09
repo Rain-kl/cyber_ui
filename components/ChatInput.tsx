@@ -45,55 +45,27 @@ export default function ChatInput({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-            title="Attach file"
+        {/* Send Button */}
+        <button
+          type="submit"
+          disabled={!inputValue.trim() || disabled}
+          className="p-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          title="Send message"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-            title="Research"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-
-          <div className="flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
-            <span>Claude Sonnet 4</span>
-            <button className="ml-1 p-1 rounded-full bg-orange-400 text-white">
-              <span className="text-xs">T</span>
-            </button>
-          </div>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+            />
+          </svg>
+        </button>
       </form>
 
       <div className="mt-2 text-xs text-gray-500 text-center">

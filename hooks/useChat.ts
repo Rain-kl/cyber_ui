@@ -55,7 +55,7 @@ export function useChat() {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Accept": "text/plain, text/event-stream, */*",
+                        "Accept": "text/event-stream, */*",
                         "Cache-Control": "no-cache",
                     },
                     body: JSON.stringify({

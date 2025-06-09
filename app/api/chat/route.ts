@@ -5,6 +5,7 @@ import {
     isApiKeyConfigured,
     OPENAI_CONFIG,
 } from "@/utils/openai-config";
+import { Message } from "@/types/chat";
 
 // 初始化 OpenAI 客户端
 const openai = new OpenAI({
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { query, messages = [] } = body;
+        const { query, messages = [] }: { query: string; messages: Message[] } = body;
 
         // 构建消息历史
         const conversationMessages:
@@ -38,13 +39,13 @@ export async function POST(request: NextRequest) {
                     content: OPENAI_CONFIG.SYSTEM_MESSAGE,
                 },
                 // 添加历史消息 (限制历史消息数量以避免超出 token 限制)
-                ...messages.slice(-10).map((msg: any) => ({
-                    role: msg.sender === "user" ? "user" : "assistant",
+                ...messages.slice(-10).map((msg: Message) => ({
+                    role: msg.sender === "user" ? "user" as const : "assistant" as const,
                     content: msg.content,
                 })),
                 // 添加当前用户消息
                 {
-                    role: "user",
+                    role: "user" as const,
                     content: query,
                 },
             ];
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
         // 返回流式响应
         return new NextResponse(readable, {
             headers: {
-                "Content-Type": "text/plain; charset=utf-8",
+                "Content-Type": "text/event-stream; charset=utf-8",
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "Transfer-Encoding": "chunked",

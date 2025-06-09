@@ -57,13 +57,14 @@ export default function TopBar({ onHistoryLoaded }: TopBarProps) {
   return (
     <>
       {/* 固定顶栏 */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+      <div className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200" style={{ backgroundColor: '#F9F8F4' }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
           <h1 className="text-xl font-semibold text-gray-800">AI Chat</h1>
           <button
             onClick={fetchChatHistory}
             disabled={isLoading}
-            className="px-4 py-2 bg-white-600 text-black rounded-lg hover:bg-white-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+            className="px-4 py-2 text-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors border border-gray-300"
+            style={{ backgroundColor: '#F9F8F4' }}
           >
             {isLoading ? (
               <>

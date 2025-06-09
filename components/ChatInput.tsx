@@ -29,7 +29,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-gray-200 p-4" style={{ backgroundColor: '#F9F8F4' }}>
       <form onSubmit={handleSubmit} className="flex items-end gap-3">
         <div className="flex-1">
           <div className="relative">
@@ -39,7 +39,8 @@ export default function ChatInput({
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               disabled={disabled}
-              className="w-full min-h-[44px] max-h-32 px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+              className="w-full min-h-[44px] max-h-32 px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#F9F8F4' }}
               rows={1}
             />
           </div>
@@ -49,7 +50,7 @@ export default function ChatInput({
         <button
           type="submit"
           disabled={!inputValue.trim() || disabled}
-          className="p-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           title="Send message"
         >
           <svg

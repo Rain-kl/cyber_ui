@@ -49,7 +49,7 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen" style={{ backgroundColor: '#F9F8F4' }}>
       {/* 顶栏 */}
       <TopBar onHistoryLoaded={handleHistoryLoaded} />
       
@@ -99,10 +99,10 @@ export default function ChatInterface() {
                   {isLoading && messages.length === 0 && (
                     <div className="flex justify-start mb-4">
                       <div className="flex items-start gap-3 max-w-[80%]">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium bg-orange-500">
-                          ✱
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium bg-blue-500">
+                          U
                         </div>
-                        <div className="px-4 py-3 rounded-lg bg-white border border-gray-200 shadow-sm">
+                        <div className="px-4 py-3 rounded-lg border border-gray-300" style={{ backgroundColor: '#F9F8F4' }}>
                           <div className="flex items-center gap-1">
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                             <div

@@ -21,7 +21,7 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
 };
 
 // 导出消息解析器
-export { parseMessageContent } from './messageParser';
+export { parseMessageContent } from "./messageParser";
 
 // 导出 API 配置工具
 export * from "./api";

@@ -35,12 +35,12 @@ export function useChat() {
                 messages: prev.messages.map((msg) => {
                     if (msg.id === messageId) {
                         // 如果是助手消息，解析思考内容
-                        if (msg.sender === 'assistant') {
+                        if (msg.sender === "assistant") {
                             const parsed = parseMessageContent(content);
                             return {
                                 ...msg,
                                 content,
-                                isThinking: parsed.hasActiveThinking
+                                isThinking: parsed.hasActiveThinking,
                             };
                         }
                         return { ...msg, content };

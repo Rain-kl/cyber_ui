@@ -34,20 +34,20 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   const renderContent = () => {
     if (isUser || !parsedMessage) {
       return (
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">
+        <div className="text-sm leading-relaxed whitespace-pre-wrap w-full">
           {message.content}
-        </p>
+        </div>
       );
     }
 
     return (
-      <div className="text-sm leading-relaxed">
+      <div className="text-sm leading-relaxed w-full">
         {parsedMessage.segments.map((segment, index) => {
           if (segment.type === 'text') {
             return (
-              <span key={index} className="whitespace-pre-wrap">
+              <div key={index} className="whitespace-pre-wrap">
                 {segment.content}
-              </span>
+              </div>
             );
           } else {
             return (
@@ -64,28 +64,26 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div
-        className={`flex items-start gap-3 max-w-[80%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
-      >
-        {/* Avatar */}
-        <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 ${
-            isUser ? 'bg-gray-600' : 'bg-orange-500'
-          }`}
-        >
-          {isUser ? 'W' : '✱'}
-        </div>
+    <div className="flex justify-start mb-4">
+      <div className="flex items-start gap-3 max-w-[90%]">
+        {/* Avatar - 只显示用户头像 */}
+        {isUser && (
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 bg-blue-500">
+            U
+          </div>
+        )}
 
         {/* Message Content */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2" style={{ maxWidth: '719px', width: '100%' }}>
           {/* 主要消息内容 */}
           <div
-            className={`px-4 py-3 rounded-lg ${
-              isUser
-                ? 'bg-gray-100 text-gray-800'
-                : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
-            }`}
+            className="px-4 py-3 rounded-lg border border-gray-300"
+            style={{
+              backgroundColor: isUser ? '#EEECE3' : '#F9F8F4',
+              minHeight: '42px',
+              display: 'flex',
+              alignItems: 'flex-start'
+            }}
           >
             {renderContent()}
           </div>

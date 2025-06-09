@@ -9,8 +9,18 @@ export default function InlineThinkingCard({ content, isCompleted }: InlineThink
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="my-2 inline-block w-full">
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm">
+    <div className="my-2 w-full">
+      <div 
+        className="border border-gray-400 rounded-lg p-3" 
+        style={{ 
+          backgroundColor: '#F9F8F4', 
+          maxWidth: '719px', 
+          minHeight: '42px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}
+      >
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors w-full text-left"
@@ -41,7 +51,7 @@ export default function InlineThinkingCard({ content, isCompleted }: InlineThink
         </button>
         
         {isExpanded && content.trim() && (
-          <div className="mt-2 pt-2 border-t border-gray-200">
+          <div className="mt-2 pt-2 border-t border-gray-300">
             <div className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed">
               {content}
               {!isCompleted && (

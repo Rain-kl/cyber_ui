@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 body {
-  background: #ffffff;
+  background: #F9F8F4;
   color: #171717;
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
@@ -12,20 +12,20 @@ body {
 
 /* Custom scrollbar for webkit browsers */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #F9F8F4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
+  background: #D1D1D1;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #B8B8B8;
 }
 
 /* Animation for bounce loading dots */

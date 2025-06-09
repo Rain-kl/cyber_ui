@@ -1,5 +1,7 @@
 import { Message } from '@/types/chat';
 import { copyToClipboard } from '@/utils';
+import { parseMessageContent } from '@/utils/messageParser';
+import InlineThinkingCard from './ThinkingComponent';
 
 interface ChatMessageProps {
   message: Message;
@@ -8,13 +10,57 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   const isUser = message.sender === 'user';
+  
+  // 解析消息内容，提取思考部分
+  const parsedMessage = isUser ? null : parseMessageContent(message.content);
 
   const handleCopy = async () => {
-    const success = await copyToClipboard(message.content);
+    // 复制时只复制文本内容，不包含思考部分
+    let contentToCopy = message.content;
+    if (parsedMessage) {
+      contentToCopy = parsedMessage.segments
+        .filter(segment => segment.type === 'text')
+        .map(segment => segment.content)
+        .join('');
+    }
+    const success = await copyToClipboard(contentToCopy);
     if (success) {
       // 这里可以添加一个 toast 通知
       console.log('Message copied to clipboard');
     }
+  };
+
+  // 渲染内容片段
+  const renderContent = () => {
+    if (isUser || !parsedMessage) {
+      return (
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">
+          {message.content}
+        </p>
+      );
+    }
+
+    return (
+      <div className="text-sm leading-relaxed">
+        {parsedMessage.segments.map((segment, index) => {
+          if (segment.type === 'text') {
+            return (
+              <span key={index} className="whitespace-pre-wrap">
+                {segment.content}
+              </span>
+            );
+          } else {
+            return (
+              <InlineThinkingCard
+                key={index}
+                content={segment.content}
+                isCompleted={segment.isThinkingCompleted || false}
+              />
+            );
+          }
+        })}
+      </div>
+    );
   };
 
   return (
@@ -33,6 +79,7 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
 
         {/* Message Content */}
         <div className="flex flex-col gap-2">
+          {/* 主要消息内容 */}
           <div
             className={`px-4 py-3 rounded-lg ${
               isUser
@@ -40,9 +87,7 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
                 : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
             }`}
           >
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-              {message.content}
-            </p>
+            {renderContent()}
           </div>
 
           {/* Action buttons for assistant messages */}

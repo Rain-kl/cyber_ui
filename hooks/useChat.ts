@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { ChatState, Message } from "@/types/chat";
 import { generateId } from "@/utils";
 import { API_URLS } from "@/utils/api";
+import { parseMessageContent } from "@/utils/messageParser";
 
 export function useChat() {
     const [state, setState] = useState<ChatState>({
@@ -31,9 +32,21 @@ export function useChat() {
         (messageId: string, content: string) => {
             setState((prev) => ({
                 ...prev,
-                messages: prev.messages.map((msg) =>
-                    msg.id === messageId ? { ...msg, content } : msg
-                ),
+                messages: prev.messages.map((msg) => {
+                    if (msg.id === messageId) {
+                        // 如果是助手消息，解析思考内容
+                        if (msg.sender === 'assistant') {
+                            const parsed = parseMessageContent(content);
+                            return {
+                                ...msg,
+                                content,
+                                isThinking: parsed.hasActiveThinking
+                            };
+                        }
+                        return { ...msg, content };
+                    }
+                    return msg;
+                }),
             }));
         },
         [],

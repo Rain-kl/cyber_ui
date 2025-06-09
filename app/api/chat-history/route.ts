@@ -15,6 +15,7 @@ interface ChatHistoryResponse {
 export async function GET(
     request: NextRequest,
 ): Promise<NextResponse<ChatHistoryResponse>> {
+    request.headers.get("Content-Type") === "application/json";
     try {
         // 模拟聊天记录数据，实际项目中这里应该从数据库获取
         const mockChatHistory: ChatHistoryRecord[] = [

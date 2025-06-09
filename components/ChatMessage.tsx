@@ -34,7 +34,7 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   const renderContent = () => {
     if (isUser || !parsedMessage) {
       return (
-        <div className="text-sm leading-relaxed whitespace-pre-wrap w-full">
+        <div className="leading-relaxed whitespace-pre-wrap w-full text-center" style={{ fontSize: '15px' }}>
           {message.content}
         </div>
       );
@@ -69,10 +69,10 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
         // User message layout
         <div className="flex justify-start">
           <div
-            className="px-4 py-3 rounded-lg border border-gray-300 flex items-start gap-3"
-            style={{ backgroundColor: '#EEECE3', minHeight: '42px' }}
+            className="px-4 py-3 border border-gray-300 flex items-start gap-3"
+            style={{ backgroundColor: '#EEECE3', minHeight: '28px', borderRadius: '10px' }}
           >
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 user-avatar">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 user-avatar">
               U
             </div>
             {renderContent()}
@@ -82,9 +82,6 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
         // Assistant message layout
         <div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0" style={{backgroundColor: '#D36A42'}}>
-              *
-            </div>
             <div className="flex-1">
               {renderContent()}
             </div>

@@ -7,7 +7,7 @@ import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 
 export default function ChatInterface() {
-  const { messages, isLoading, sendMessage } = useChat();
+  const { messages, isLoading, sendMessage, clearMessageContent } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto scroll to bottom when new messages are added
@@ -23,6 +23,9 @@ export default function ChatInterface() {
     if (messageIndex > 0) {
       const userMessage = messages[messageIndex - 1];
       if (userMessage.sender === 'user') {
+        // 清空当前助手消息的内容
+        clearMessageContent(messageId);
+        // 重新发送用户消息
         sendMessage(userMessage.content);
       }
     }
@@ -37,10 +40,15 @@ export default function ChatInterface() {
             <ChatHeader />
           ) : (
             <div className="px-4 py-6">
-              {messages.map(message => (
+              {messages.map((message, index) => (
                 <ChatMessage
                   key={message.id}
                   message={message}
+                  isStreaming={
+                    isLoading && 
+                    message.sender === 'assistant' && 
+                    index === messages.length - 1
+                  }
                   onRetry={
                     message.sender === 'assistant'
                       ? () => handleRetry(message.id)
@@ -49,8 +57,8 @@ export default function ChatInterface() {
                 />
               ))}
 
-              {/* Loading indicator */}
-              {isLoading && (
+              {/* Loading indicator - 只在初始加载时显示 */}
+              {isLoading && messages.length === 0 && (
                 <div className="flex justify-start mb-4">
                   <div className="flex items-start gap-3 max-w-[80%]">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium bg-orange-500">

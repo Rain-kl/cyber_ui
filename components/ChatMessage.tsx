@@ -4,9 +4,10 @@ import { copyToClipboard } from '@/utils';
 interface ChatMessageProps {
   message: Message;
   onRetry?: () => void;
+  isStreaming?: boolean; // 新增：标识是否正在流式输出
 }
 
-export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
+export default function ChatMessage({ message, onRetry, isStreaming = false }: ChatMessageProps) {
   const isUser = message.sender === 'user';
 
   const handleCopy = async () => {
@@ -42,6 +43,10 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
           >
             <p className="text-sm leading-relaxed whitespace-pre-wrap">
               {message.content}
+              {/* 流式输出时显示光标 */}
+              {isStreaming && !isUser && (
+                <span className="animate-pulse ml-1 text-gray-400">|</span>
+              )}
             </p>
           </div>
 

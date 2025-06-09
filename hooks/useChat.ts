@@ -139,6 +139,16 @@ export function useChat() {
         [],
     );
 
+    const removeMessagesFromIndex = useCallback(
+        (fromIndex: number) => {
+            setState((prev) => ({
+                ...prev,
+                messages: prev.messages.slice(0, fromIndex),
+            }));
+        },
+        [],
+    );
+
     const clearMessages = useCallback(() => {
         setState((prev) => ({ ...prev, messages: [] }));
     }, []);
@@ -149,5 +159,6 @@ export function useChat() {
         sendMessage,
         clearMessages,
         clearMessageContent,
+        removeMessagesFromIndex,
     };
 }

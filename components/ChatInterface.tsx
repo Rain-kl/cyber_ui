@@ -8,7 +8,7 @@ import ChatInput from '@/components/ChatInput';
 import TopBar from './TopBar';
 
 export default function ChatInterface() {
-  const { messages, isLoading, sendMessage, clearMessageContent } = useChat();
+  const { messages, isLoading, sendMessage, clearMessageContent, removeMessagesFromIndex } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showHistoryMessages, setShowHistoryMessages] = useState(false);
   const [historyMessages, setHistoryMessages] = useState<any[]>([]);
@@ -21,15 +21,17 @@ export default function ChatInterface() {
   const hasMessages = messages.length > 0;
 
   const handleRetry = (messageId: string) => {
-    // Find the user message that preceded this assistant message
-    const messageIndex = messages.findIndex(m => m.id === messageId);
-    if (messageIndex > 0) {
-      const userMessage = messages[messageIndex - 1];
+    // Find the assistant message index
+    const assistantMessageIndex = messages.findIndex(m => m.id === messageId);
+    if (assistantMessageIndex > 0) {
+      const userMessage = messages[assistantMessageIndex - 1];
       if (userMessage.sender === 'user') {
-        // 清空当前助手消息的内容
-        clearMessageContent(messageId);
+        // 删除从用户消息开始的所有后续消息（包括用户消息和助手消息）
+        removeMessagesFromIndex(assistantMessageIndex - 1);
         // 重新发送用户消息
-        sendMessage(userMessage.content);
+        setTimeout(() => {
+          sendMessage(userMessage.content);
+        }, 100); // 稍微延迟以确保状态更新完成
       }
     }
   };

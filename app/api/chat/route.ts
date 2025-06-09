@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { query, messages = [] }: { query: string; messages: Message[] } = body;
+        const { query, messages = [] }: { query: string; messages: Message[] } =
+            body;
 
         // 构建消息历史
         const conversationMessages:
@@ -40,7 +41,9 @@ export async function POST(request: NextRequest) {
                 },
                 // 添加历史消息 (限制历史消息数量以避免超出 token 限制)
                 ...messages.slice(-10).map((msg: Message) => ({
-                    role: msg.sender === "user" ? "user" as const : "assistant" as const,
+                    role: msg.sender === "user"
+                        ? "user" as const
+                        : "assistant" as const,
                     content: msg.content,
                 })),
                 // 添加当前用户消息

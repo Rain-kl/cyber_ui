@@ -24,24 +24,24 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
     result
 }) => {
     return (
-        <Card 
-            sx={{ 
-                my: 2, 
+        <Card
+            sx={{
+                my: 2,
                 border: '1px solid #e0e0e0',
                 borderRadius: 2,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                backgroundColor: isCompleted ? '#f8f9fa' : '#fff3e0'
+                backgroundColor: isCompleted ? '#F8F7F3' : '#F8F7F3'
             }}
         >
             <CardContent>
                 <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                     <Box flex={1}>
                         {/* 标题 */}
-                        <Typography 
-                            variant="h6" 
-                            component="div" 
-                            sx={{ 
-                                fontWeight: 'bold', 
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontWeight: 'bold',
                                 mb: 1,
                                 color: isCompleted ? '#2e7d32' : '#f57c00'
                             }}

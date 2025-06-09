@@ -2,6 +2,7 @@ import { Message } from '@/types/chat';
 import { copyToClipboard } from '@/utils';
 import { parseMessageContent } from '@/utils/messageParser';
 import ThinkingComponent from './ThinkingComponent';
+import ToolComponent from './ToolComponent';
 
 interface ChatMessageProps {
   message: Message;
@@ -15,7 +16,7 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   const parsedMessage = isUser ? null : parseMessageContent(message.content);
 
   const handleCopy = async () => {
-    // 复制时只复制文本内容，不包含思考部分
+    // 复制时只复制文本内容，不包含思考部分和工具部分
     let contentToCopy = message.content;
     if (parsedMessage) {
       contentToCopy = parsedMessage.segments
@@ -49,7 +50,7 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
                 <p>{segment.content}</p>
               </div>
             );
-          } else {
+          } else if (segment.type === 'thinking') {
             return (
               <ThinkingComponent
                 key={index}
@@ -57,7 +58,18 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
                 isCompleted={segment.isThinkingCompleted || false}
               />
             );
+          } else if (segment.type === 'tool') {
+            return (
+              <ToolComponent
+                key={index}
+                toolName={segment.toolName || '未知工具'}
+                parameters={segment.toolParameters || []}
+                isCompleted={segment.isToolCompleted || false}
+                result={segment.toolResult}
+              />
+            );
           }
+          return null;
         })}
       </div>
     );

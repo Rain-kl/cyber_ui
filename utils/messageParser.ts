@@ -6,7 +6,7 @@ export interface ToolParameter {
 }
 
 export interface ContentSegment {
-    type: "text" | "thinking" | "tool";
+    type: "text" | "thinking" | "tool" | "user";
     content: string;
     isThinkingCompleted?: boolean;
     toolName?: string;
@@ -28,12 +28,13 @@ export function parseMessageContent(rawContent: string): ParsedMessage {
 
     // 使用正则表达式分割内容，保留分隔符
     const parts = rawContent.split(
-        /(<think>|<\/think>|<use_tool>|<\/use_tool>|<using>|<\/using>)/,
+        /(<think>|<\/think>|<use_tool>|<\/use_tool>|<using>|<\/using>|<user>|<\/user>)/,
     );
 
     let isInsideThinking = false;
     let isInsideTool = false;
     let isInsideUsing = false;
+    let isInsideUser = false;
     let currentText = "";
     let currentToolName = "";
     let currentToolParameters: ToolParameter[] = [];
@@ -112,6 +113,26 @@ export function parseMessageContent(rawContent: string): ParsedMessage {
                 currentText = "";
             }
             isInsideUsing = false;
+        } else if (part === "<user>") {
+            // 保存之前的文本内容
+            if (currentText.trim()) {
+                segments.push({
+                    type: "text",
+                    content: currentText,
+                });
+                currentText = "";
+            }
+            isInsideUser = true;
+        } else if (part === "</user>") {
+            // 完成用户内容块
+            if (isInsideUser && currentText.trim()) {
+                segments.push({
+                    type: "user",
+                    content: currentText.trim(),
+                });
+                currentText = "";
+            }
+            isInsideUser = false;
         } else if (part) {
             if (!isInsideUsing) {
                 currentText += part;
@@ -142,6 +163,12 @@ export function parseMessageContent(rawContent: string): ParsedMessage {
                 isToolCompleted: false,
             });
             hasActiveTool = true;
+        } else if (isInsideUser) {
+            // 未完成的用户内容
+            segments.push({
+                type: "user",
+                content: currentText.trim(),
+            });
         } else {
             // 普通文本
             segments.push({

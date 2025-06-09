@@ -11,16 +11,16 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   const isUser = message.sender === 'user';
-  
+
   // 解析消息内容，提取思考部分
   const parsedMessage = isUser ? null : parseMessageContent(message.content);
 
   const handleCopy = async () => {
-    // 复制时只复制文本内容，不包含思考部分和工具部分
+    // 复制时只复制文本内容和用户内容，不包含思考部分和工具部分
     let contentToCopy = message.content;
     if (parsedMessage) {
       contentToCopy = parsedMessage.segments
-        .filter(segment => segment.type === 'text')
+        .filter(segment => segment.type === 'text' || segment.type === 'user')
         .map(segment => segment.content)
         .join('');
     }
@@ -67,6 +67,28 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
                 isCompleted={segment.isToolCompleted || false}
                 result={segment.toolResult}
               />
+            );
+          } else if (segment.type === 'user') {
+            return (
+              <p
+                key={index}
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.6',
+                  // color: '#2c3e50',
+                  margin: '16px 0',
+                  padding: '12px 16px',
+                  // backgroundColor: '#f8f9fa',
+                  borderRadius: '8px',
+                  // border: '1px solid #e9ecef',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  letterSpacing: '0.02em',
+                  wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap'
+                }}
+              >
+                {segment.content}
+              </p>
             );
           }
           return null;

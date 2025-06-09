@@ -6,3 +6,4 @@ export { default as TopBar } from "./TopBar";
 export { default as ThinkingComponent } from "./ThinkingComponent";
 export { default as StatusCard } from "./StatusCard";
 export { default as ToolComponent } from "./ToolComponent";
+export { default as UserContentComponent } from "./UserContentComponent";

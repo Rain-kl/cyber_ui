@@ -1,7 +1,7 @@
 import { Message } from '@/types/chat';
 import { copyToClipboard } from '@/utils';
 import { parseMessageContent } from '@/utils/messageParser';
-import InlineThinkingCard from './ThinkingComponent';
+import ThinkingComponent from './ThinkingComponent';
 
 interface ChatMessageProps {
   message: Message;
@@ -46,12 +46,12 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
           if (segment.type === 'text') {
             return (
               <div key={index} className="whitespace-pre-wrap">
-                {segment.content}
+                <p>{segment.content}</p>
               </div>
             );
           } else {
             return (
-              <InlineThinkingCard
+              <ThinkingComponent
                 key={index}
                 content={segment.content}
                 isCompleted={segment.isThinkingCompleted || false}
@@ -64,33 +64,33 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
   };
 
   return (
-    <div className="flex justify-start mb-4">
-      <div className="flex items-start gap-3 max-w-[90%]">
-        {/* Avatar - 只显示用户头像 */}
-        {isUser && (
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 bg-blue-500">
-            U
-          </div>
-        )}
-
-        {/* Message Content */}
-        <div className="flex flex-col gap-2" style={{ maxWidth: '719px', width: '100%' }}>
-          {/* 主要消息内容 */}
+    <div className="mb-4">
+      {isUser ? (
+        // User message layout
+        <div className="flex justify-start">
           <div
-            className="px-4 py-3 rounded-lg border border-gray-300"
-            style={{
-              backgroundColor: isUser ? '#EEECE3' : '#F9F8F4',
-              minHeight: '42px',
-              display: 'flex',
-              alignItems: 'flex-start'
-            }}
+            className="px-4 py-3 rounded-lg border border-gray-300 flex items-start gap-3"
+            style={{ backgroundColor: '#EEECE3', minHeight: '42px' }}
           >
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 user-avatar">
+              U
+            </div>
             {renderContent()}
           </div>
-
-          {/* Action buttons for assistant messages */}
-          {!isUser && (
-            <div className="flex items-center gap-2 px-1">
+        </div>
+      ) : (
+        // Assistant message layout
+        <div>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0" style={{backgroundColor: '#D36A42'}}>
+              *
+            </div>
+            <div className="flex-1">
+              {renderContent()}
+            </div>
+          </div>
+          <div className="flex flex-col items-end mt-2">
+            <div className="assistant-message-actions">
               <button
                 onClick={handleCopy}
                 className="p-1.5 hover:bg-gray-100 rounded-md transition-colors"
@@ -133,9 +133,12 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
                 </button>
               )}
             </div>
-          )}
+            <p className="disclaimer">
+              Assistant can make mistakes. Please double-check responses.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

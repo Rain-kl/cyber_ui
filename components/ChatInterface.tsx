@@ -55,7 +55,7 @@ export default function ChatInterface() {
       
       {/* Chat Messages Area - 添加顶部填充以避免被固定顶栏遮挡 */}
       <div className="flex-1 overflow-y-auto pt-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="chat-message-container">
           {!hasMessages && !showHistoryMessages ? (
             <ChatHeader />
           ) : (

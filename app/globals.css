@@ -28,6 +28,31 @@ body {
   background: #B8B8B8;
 }
 
+.chat-message-container {
+  max-width: 752px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.user-avatar {
+  background-color: #353533;
+  color: white;
+}
+
+.assistant-message-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.disclaimer {
+  text-align: right;
+  font-size: 0.75rem; /* 12px */
+  color: #9CA3AF; /* gray-400 */
+  margin-top: 0.5rem;
+}
+
 /* Animation for bounce loading dots */
 @keyframes bounce {
   0%,
@@ -38,4 +63,15 @@ body {
   40% {
     transform: scale(1);
   }
+}
+
+.status-card-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.status-card-content.expanded {
+  max-height: 1000px; /* 足够大的值以容纳内容 */
+  overflow-y: auto;
 }

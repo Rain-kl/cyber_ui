@@ -90,7 +90,8 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
             <div className="assistant-message-actions">
               <button
                 onClick={handleCopy}
-                className="p-1.5 hover:bg-gray-100 rounded-md transition-colors"
+                className="rounded-md transition-colors flex items-center justify-center hover:bg-[#EEECE3]"
+                style={{ height: '32px', width: '32px' }}
                 title="Copy"
               >
                 <svg
@@ -110,7 +111,8 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
               {onRetry && (
                 <button
                   onClick={onRetry}
-                  className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-md transition-colors flex items-center gap-1"
+                  className="px-3 text-xs text-gray-600 rounded-md transition-colors flex items-center gap-1 hover:bg-[#EEECE3]"
+                  style={{ height: '32px' }}
                   title="Retry"
                 >
                   <svg
@@ -125,8 +127,9 @@ export default function ChatMessage({ message, onRetry }: ChatMessageProps) {
                       strokeWidth={2}
                       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                     />
-                  </svg>
-                  Retry
+                    </svg>
+                    <p className="text-gray-600" style={{ margin: 0, fontSize: '14px' }} title="Retry">
+                    Retry</p>
                 </button>
               )}
             </div>

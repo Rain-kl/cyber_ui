@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@mui/material';
+import { HistoryOutlined, ArrowBack } from '@mui/icons-material';
 
 interface ChatHistoryRecord {
   role: 'user' | 'assistant';
@@ -16,9 +18,11 @@ interface ChatHistoryResponse {
 
 interface TopBarProps {
   onHistoryLoaded: (records: ChatHistoryRecord[]) => void;
+  showHistoryMessages: boolean;
+  onReturnToChat: () => void;
 }
 
-export default function TopBar({ onHistoryLoaded }: TopBarProps) {
+export default function TopBar({ onHistoryLoaded, showHistoryMessages, onReturnToChat }: TopBarProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [historyRecords, setHistoryRecords] = useState<ChatHistoryRecord[]>([]);
@@ -43,6 +47,14 @@ export default function TopBar({ onHistoryLoaded }: TopBarProps) {
     }
   };
 
+  const handleButtonClick = () => {
+    if (showHistoryMessages) {
+      onReturnToChat();
+    } else {
+      fetchChatHistory();
+    }
+  };
+
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
     return date.toLocaleString('zh-CN', {
@@ -57,29 +69,39 @@ export default function TopBar({ onHistoryLoaded }: TopBarProps) {
   return (
     <>
       {/* 固定顶栏 */}
-      <div className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200" style={{ backgroundColor: '#F9F8F4' }}>
-        <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: '#F9F8F4' }}>
+        <div className="px-8 py-3 flex justify-between items-center">
           <h1 className="text-xl font-semibold text-gray-800">AI Chat</h1>
-          <button
-            onClick={fetchChatHistory}
+          <Button
+            variant="outlined"
+            onClick={handleButtonClick}
             disabled={isLoading}
-            className="px-4 py-2 text-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors border border-gray-300"
-            style={{ backgroundColor: '#F9F8F4' }}
-          >
-            {isLoading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                加载中...
-              </>
+            startIcon={isLoading ? (
+              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+            ) : showHistoryMessages ? (
+              <ArrowBack />
             ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                对话记录
-              </>
+              <HistoryOutlined />
             )}
-          </button>
+            sx={{
+              color: showHistoryMessages ? '#8B7355' : '#374151',
+              border: 'none',
+              backgroundColor: showHistoryMessages ? '#ECE9E0' : '#F9F8F4',
+              borderRadius: '10px',
+              '&:hover': {
+                backgroundColor: showHistoryMessages ? '#D4CFC4' : '#E5E2D8',
+                border: 'none',
+              },
+              '&:disabled': {
+                opacity: 0.5,
+                cursor: 'not-allowed',
+              },
+              fontSize: '14px',
+              textTransform: 'none',
+            }}
+          >
+            {isLoading ? '加载中...' : showHistoryMessages ? '返回当前对话' : '对话记录'}
+          </Button>
         </div>
       </div>
     </>

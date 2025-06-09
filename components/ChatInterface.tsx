@@ -18,6 +18,15 @@ export default function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Auto scroll to bottom when showing history messages
+  useEffect(() => {
+    if (showHistoryMessages) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [showHistoryMessages]);
+
   const hasMessages = messages.length > 0;
 
   const handleRetry = (messageId: string) => {
@@ -51,7 +60,11 @@ export default function ChatInterface() {
   return (
     <div className="flex flex-col h-screen" style={{ backgroundColor: '#F9F8F4' }}>
       {/* 顶栏 */}
-      <TopBar onHistoryLoaded={handleHistoryLoaded} />
+      <TopBar 
+        onHistoryLoaded={handleHistoryLoaded} 
+        showHistoryMessages={showHistoryMessages}
+        onReturnToChat={() => setShowHistoryMessages(false)}
+      />
       
       {/* Chat Messages Area - 添加顶部填充以避免被固定顶栏遮挡 */}
       <div className="flex-1 overflow-y-auto pt-16">
@@ -63,16 +76,8 @@ export default function ChatInterface() {
               {/* 显示历史记录或当前对话 */}
               {showHistoryMessages ? (
                 <>
-                  <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-medium text-blue-800">历史对话记录</h3>
-                      <button
-                        onClick={() => setShowHistoryMessages(false)}
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                      >
-                        返回当前对话
-                      </button>
-                    </div>
+                  <div className="mb-6 p-4 border-l-4 rounded-lg" style={{ backgroundColor: '#ECE9E0', borderColor: '#D4CFC4' }}>
+                    <h3 className="text-lg font-medium" style={{ color: '#8B7355' }}>历史对话记录</h3>
                   </div>
                   {historyMessages.map((message) => (
                     <ChatMessage

@@ -56,7 +56,8 @@ export default function StatusCard({ icon, title, children, defaultExpanded = fa
           sx={{
             padding: '0.75rem',
             minHeight: '83px',
-            borderRadius: '12px 12px 0 0',
+            borderRadius: expanded ? '12px 12px 0 0' : '12px',
+            backgroundColor: expanded ? colors.bg.secondary() : 'transparent',
             '& .MuiAccordionSummary-content': {
               margin: 0,
               alignItems: 'flex-start',
@@ -80,6 +81,7 @@ export default function StatusCard({ icon, title, children, defaultExpanded = fa
             padding: '0.5rem 0.75rem 0.75rem',
             borderTop: expanded ? 'none' : `1px solid ${colors.border.secondary()}`,
             borderRadius: '0 0 12px 12px',
+            backgroundColor: expanded ? colors.bg.secondary() : 'transparent',
           }}
         >
           <div className="text-sm whitespace-pre-wrap leading-6" style={{ color: colors.text.muted() }}>

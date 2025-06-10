@@ -1,4 +1,5 @@
 import StatusCard from './StatusCard';
+import { useThemeColors } from '@/themes/utils';
 
 interface ThinkingComponentProps {
   content: string;
@@ -6,11 +7,13 @@ interface ThinkingComponentProps {
 }
 
 export default function ThinkingComponent({ content, isCompleted }: ThinkingComponentProps) {
+  const colors = useThemeColors();
+  
   const icon = !isCompleted ? (
     <div className="flex items-center gap-1">
-      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
-      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+      <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.text.muted() }}></div>
+      <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.text.muted(), animationDelay: '0.2s' }}></div>
+      <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.text.muted(), animationDelay: '0.4s' }}></div>
     </div>
   ) : (
     <svg 
@@ -20,6 +23,7 @@ export default function ThinkingComponent({ content, isCompleted }: ThinkingComp
       fill="none" 
       xmlns="http://www.w3.org/2000/svg" 
       className="stroke-[2] text-nowrap shrink-0"
+      style={{ color: colors.text.primary() }}
     >
       <path 
         d="M19 9C19 12.866 15.866 17 12 17C8.13398 17 4.99997 12.866 4.99997 9C4.99997 5.13401 8.13398 3 12 3C15.866 3 19 5.13401 19 9Z" 
@@ -80,7 +84,7 @@ export default function ThinkingComponent({ content, isCompleted }: ThinkingComp
     >
       {content}
       {!isCompleted && (
-        <span className="inline-block ml-1 w-1 h-3 bg-gray-400 animate-pulse"></span>
+        <span className="inline-block ml-1 w-1 h-3 animate-pulse" style={{ backgroundColor: colors.text.muted() }}></span>
       )}
     </StatusCard>
   );

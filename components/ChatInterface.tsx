@@ -101,17 +101,25 @@ export default function ChatInterface() {
                 </>
               ) : (
                 <>
-                  {messages.map((message) => (
-                    <ChatMessage
-                      key={message.id}
-                      message={message}
-                      onRetry={
-                        message.sender === 'assistant'
-                          ? () => handleRetry(message.id)
-                          : undefined
-                      }
-                    />
-                  ))}
+                  {messages.map((message, index) => {
+                    // 判断当前消息是否是最后一条助手消息且正在加载
+                    const isLastAssistantMessage = message.sender === 'assistant' && 
+                      index === messages.length - 1;
+                    const shouldShowLoading = isLastAssistantMessage && isLoading;
+                    
+                    return (
+                      <ChatMessage
+                        key={message.id}
+                        message={message}
+                        isLoading={shouldShowLoading}
+                        onRetry={
+                          message.sender === 'assistant'
+                            ? () => handleRetry(message.id)
+                            : undefined
+                        }
+                      />
+                    );
+                  })}
 
                   {/* Loading indicator - 只在初始加载时显示 */}
                   {isLoading && messages.length === 0 && (

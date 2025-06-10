@@ -50,6 +50,16 @@ body {
   height: calc(100vh - 4rem); /* 减去顶栏高度 */
 }
 
+/* 正在输出的渐变动画 */
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .user-avatar {
   background-color: #353533;
   color: white;

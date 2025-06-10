@@ -9,6 +9,9 @@ export interface Message {
     timestamp: Date;
     sender: "user" | "assistant";
     isThinking?: boolean;
+    startTime?: Date;
+    endTime?: Date;
+    tokensPerSecond?: number;
 }
 
 export interface ChatState {

@@ -12,12 +12,18 @@ export function useChat() {
     });
 
     const addMessage = useCallback(
-        (content: string, sender: "user" | "assistant", id?: string) => {
+        (
+            content: string,
+            sender: "user" | "assistant",
+            id?: string,
+            startTime?: Date,
+        ) => {
             const newMessage: Message = {
                 id: id || generateId(),
                 content,
                 sender,
                 timestamp: new Date(),
+                startTime: startTime,
             };
             setState((prev) => ({
                 ...prev,
@@ -29,7 +35,7 @@ export function useChat() {
     );
 
     const updateMessage = useCallback(
-        (messageId: string, content: string) => {
+        (messageId: string, content: string, isCompleted?: boolean) => {
             setState((prev) => ({
                 ...prev,
                 messages: prev.messages.map((msg) => {
@@ -37,11 +43,28 @@ export function useChat() {
                         // 如果是助手消息，解析思考内容
                         if (msg.sender === "assistant") {
                             const parsed = parseMessageContent(content);
-                            return {
+                            const updatedMsg = {
                                 ...msg,
                                 content,
                                 isThinking: parsed.hasActiveThinking,
                             };
+
+                            // 如果消息完成，计算统计信息
+                            if (isCompleted && msg.startTime) {
+                                const endTime = new Date();
+                                const durationMs = endTime.getTime() -
+                                    msg.startTime.getTime();
+                                const durationSeconds = durationMs / 1000;
+                                const characterCount = content.length;
+                                const tokensPerSecond = durationSeconds > 0
+                                    ? characterCount / durationSeconds
+                                    : 0;
+
+                                updatedMsg.endTime = endTime;
+                                updatedMsg.tokensPerSecond = tokensPerSecond;
+                            }
+
+                            return updatedMsg;
                         }
                         return { ...msg, content };
                     }
@@ -57,10 +80,11 @@ export function useChat() {
             // Add user message
             addMessage(content, "user");
 
-            // Set loading state and create empty assistant message
+            // Set loading state and create empty assistant message with start time
             setState((prev) => ({ ...prev, isLoading: true }));
             const assistantMessageId = generateId();
-            addMessage("", "assistant", assistantMessageId);
+            const startTime = new Date();
+            addMessage("", "assistant", assistantMessageId, startTime);
 
             try {
                 // 使用 OpenAI API 发送流式请求
@@ -120,8 +144,10 @@ export function useChat() {
                 const finalChunk = decoder.decode();
                 if (finalChunk) {
                     streamedContent += finalChunk;
-                    updateMessage(assistantMessageId, streamedContent);
                 }
+
+                // 标记消息完成并计算统计信息
+                updateMessage(assistantMessageId, streamedContent, true);
             } catch (error) {
                 console.error("OpenAI API 请求失败:", error);
                 // 如果出错，显示错误消息

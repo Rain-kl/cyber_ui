@@ -7,7 +7,7 @@
 
 import { useTheme } from '@/themes/ThemeProvider';
 import { useThemeColors } from '@/themes/utils';
-import ThemeToggle from '@/components/ThemeToggle';
+import { ThemeToggle } from '@/components';
 
 export default function ThemeDemo() {
   const { themeName } = useTheme();

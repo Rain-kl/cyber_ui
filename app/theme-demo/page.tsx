@@ -1,4 +1,4 @@
-import ThemeDemo from '@/components/ThemeDemo';
+import { ThemeDemo } from '@/ui';
 
 export default function ThemeDemoPage() {
   return <ThemeDemo />;

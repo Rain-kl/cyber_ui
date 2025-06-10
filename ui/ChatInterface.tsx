@@ -2,9 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useChat } from '@/hooks/useChat';
-import ChatHeader from '@/components/ChatHeader';
-import ChatMessage from '@/components/ChatMessage';
-import ChatInput from '@/components/ChatInput';
+import { ChatHeader, ChatMessage, ChatInput } from '@/components';
 import TopBar from './TopBar';
 import { useThemeColors } from '@/themes/utils';
 

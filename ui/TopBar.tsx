@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@mui/material';
 import { HistoryOutlined, ArrowBack } from '@mui/icons-material';
 import { useThemeColors } from '@/themes/utils';
-import ThemeToggle from './ThemeToggle';
+import { ThemeToggle } from '@/components';
 
 interface ChatHistoryRecord {
   role: 'user' | 'assistant';

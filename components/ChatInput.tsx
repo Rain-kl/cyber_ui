@@ -4,12 +4,14 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
   disabled?: boolean;
   placeholder?: string;
+  isLoading?: boolean;
 }
 
 export default function ChatInput({
   onSendMessage,
   disabled = false,
   placeholder = 'Reply to Claude...',
+  isLoading = false,
 }: ChatInputProps) {
   const [inputValue, setInputValue] = useState('');
   const [isDeepSearchEnabled, setIsDeepSearchEnabled] = useState(false);
@@ -133,13 +135,53 @@ export default function ChatInput({
             {/* Send Button */}
             <button
               type="submit"
-              disabled={!inputValue.trim() || disabled}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-100"
-              aria-label="发送"
+              disabled={!inputValue.trim() || disabled || isLoading}
+              className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 ${
+                inputValue.trim() && !isLoading
+                  ? 'text-white shadow-sm'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
+              } disabled:opacity-60 disabled:cursor-not-allowed`}
+              style={inputValue.trim() && !isLoading ? { backgroundColor: '#1C1A19' } : {}}
+              onMouseEnter={(e) => {
+                if (inputValue.trim() && !isLoading) {
+                  e.currentTarget.style.backgroundColor = '#0F0E0D';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (inputValue.trim() && !isLoading) {
+                  e.currentTarget.style.backgroundColor = '#1C1A19';
+                }
+              }}
+              aria-label={isLoading ? "正在发送" : "发送"}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-2">
-                <path d="M5 11L12 4M12 4L19 11M12 4V21" stroke="currentColor"></path>
-              </svg>
+              {isLoading ? (
+                <svg 
+                  width="18" 
+                  height="18" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="animate-spin"
+                >
+                  <circle 
+                    cx="12" 
+                    cy="12" 
+                    r="10" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    className="opacity-25"
+                  />
+                  <path 
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" 
+                    fill="currentColor"
+                  />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-2">
+                  <path d="M5 11L12 4M12 4L19 11M12 4V21" stroke="currentColor"></path>
+                </svg>
+              )}
             </button>
           </div>
         </form>

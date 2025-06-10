@@ -80,6 +80,7 @@ export default function ChatInterface() {
                 <ChatInput
                   onSendMessage={sendMessage}
                   disabled={isLoading}
+                  isLoading={isLoading}
                   placeholder="How can I help you today?"
                 />
               </div>
@@ -159,6 +160,7 @@ export default function ChatInterface() {
           <ChatInput
             onSendMessage={sendMessage}
             disabled={isLoading}
+            isLoading={isLoading}
             placeholder="Reply to Claude..."
           />
         </div>

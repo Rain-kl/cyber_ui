@@ -3,6 +3,7 @@ import { copyToClipboard } from '@/utils';
 import { parseMessageContent } from '@/utils/messageParser';
 import ThinkingComponent from './ThinkingComponent';
 import ToolComponent from './ToolComponent';
+import ErrorCard from './ErrorCard';
 
 interface ChatMessageProps {
   message: Message;
@@ -16,8 +17,8 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
   // 解析消息内容，提取思考部分
   const parsedMessage = isUser ? null : parseMessageContent(message.content);
 
-  // 判断消息是否完成 - 如果正在加载且这是最后一条助手消息，或者有未完成的思考/工具调用
-  const isMessageCompleted = isUser || (!isLoading && (!parsedMessage || (!parsedMessage.hasActiveThinking && !parsedMessage.hasActiveTool)));
+  // 判断消息是否完成 - 如果正在加载且这是最后一条助手消息，或者有未完成的思考/工具调用，或者是错误状态
+  const isMessageCompleted = isUser || message.isError || (!isLoading && (!parsedMessage || (!parsedMessage.hasActiveThinking && !parsedMessage.hasActiveTool)));
 
   const handleCopy = async () => {
     // 复制时只复制文本内容和用户内容，不包含思考部分和工具部分
@@ -42,6 +43,17 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
         <div className="leading-relaxed whitespace-pre-wrap w-full text-center" style={{ fontSize: '15px' }}>
           {message.content}
         </div>
+      );
+    }
+
+    // 如果是错误消息，显示错误卡片
+    if (message.isError && message.sender === 'assistant') {
+      return (
+        <ErrorCard
+          errorMessage={message.content}
+          errorDetails={message.errorDetails}
+          onRetry={onRetry}
+        />
       );
     }
 
@@ -124,65 +136,28 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
               {renderContent()}
             </div>
           </div>
-          <div className="flex flex-col items-end mt-2">
-            <div className="assistant-message-actions">
-              {/* 显示统计信息在复制按钮左边 */}
-              {isMessageCompleted && message.startTime && message.endTime && message.tokensPerSecond && (
-                <div className="text-xs text-gray-500 mr-2 flex items-center" style={{ height: '32px' }}>
-                  {((message.endTime.getTime() - message.startTime.getTime()) / 1000).toFixed(1)}s • {message.tokensPerSecond.toFixed(1)} 字符/秒
-                </div>
-              )}
-              
-              {/* 复制按钮 */}
-              {isMessageCompleted && (
-                <button
-                  onClick={handleCopy}
-                  className="rounded-md transition-colors flex items-center justify-center hover:bg-[#EEECE3]"
-                  style={{ height: '32px', width: '32px' }}
-                  title="Copy"
-                >
-                  <svg
-                    className="w-4 h-4 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
-                </button>
-              )}
-              
-              {/* 重试按钮或正在输出状态 */}
-              {!isMessageCompleted ? (
-                <div 
-                  className="px-3 text-xs text-gray-600 rounded-md flex items-center gap-1"
-                  style={{ height: '32px' }}
-                >
-                  <span 
-                    className="animate-pulse"
-                    style={{ 
-                      animation: 'fadeInOut 2s ease-in-out infinite',
-                      fontSize: '14px'
-                    }}
-                  >
-                    正在输出...
-                  </span>
-                </div>
-              ) : (
-                onRetry && (
+          
+          {/* 只有在非错误状态下才显示操作按钮和统计信息 */}
+          {!message.isError && (
+            <div className="flex flex-col items-end mt-2">
+              <div className="assistant-message-actions">
+                {/* 显示统计信息在复制按钮左边 */}
+                {isMessageCompleted && message.startTime && message.endTime && message.tokensPerSecond && (
+                  <div className="text-xs text-gray-500 mr-2 flex items-center" style={{ height: '32px' }}>
+                    {((message.endTime.getTime() - message.startTime.getTime()) / 1000).toFixed(1)}s • {message.tokensPerSecond.toFixed(1)} 字符/秒
+                  </div>
+                )}
+                
+                {/* 复制按钮 */}
+                {isMessageCompleted && (
                   <button
-                    onClick={onRetry}
-                    className="px-3 text-xs text-gray-600 rounded-md transition-colors flex items-center gap-1 hover:bg-[#EEECE3]"
-                    style={{ height: '32px' }}
-                    title="Retry"
+                    onClick={handleCopy}
+                    className="rounded-md transition-colors flex items-center justify-center hover:bg-[#EEECE3]"
+                    style={{ height: '32px', width: '32px' }}
+                    title="Copy"
                   >
                     <svg
-                      className="w-3 h-3"
+                      className="w-4 h-4 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -191,21 +166,62 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                       />
-                      </svg>
-                      <p className="text-gray-600" style={{ margin: 0, fontSize: '14px' }} title="Retry">
-                      Retry</p>
+                    </svg>
                   </button>
-                )
+                )}
+                
+                {/* 重试按钮或正在输出状态 */}
+                {!isMessageCompleted ? (
+                  <div 
+                    className="px-3 text-xs text-gray-600 rounded-md flex items-center gap-1"
+                    style={{ height: '32px' }}
+                  >
+                    <span 
+                      className="animate-pulse"
+                      style={{ 
+                        animation: 'fadeInOut 2s ease-in-out infinite',
+                        fontSize: '14px'
+                      }}
+                    >
+                      正在输出...
+                    </span>
+                  </div>
+                ) : (
+                  onRetry && (
+                    <button
+                      onClick={onRetry}
+                      className="px-3 text-xs text-gray-600 rounded-md transition-colors flex items-center gap-1 hover:bg-[#EEECE3]"
+                      style={{ height: '32px' }}
+                      title="Retry"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                        </svg>
+                        <p className="text-gray-600" style={{ margin: 0, fontSize: '14px' }} title="Retry">
+                        Retry</p>
+                    </button>
+                  )
+                )}
+              </div>
+              {isMessageCompleted && (
+                <p className="disclaimer">
+                  Assistant can make mistakes. Please double-check responses.
+                </p>
               )}
             </div>
-            {isMessageCompleted && (
-              <p className="disclaimer">
-                Assistant can make mistakes. Please double-check responses.
-              </p>
-            )}
-          </div>
+          )}
         </div>
       )}
     </div>

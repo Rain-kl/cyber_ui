@@ -12,6 +12,8 @@ export interface Message {
     startTime?: Date;
     endTime?: Date;
     tokensPerSecond?: number;
+    isError?: boolean;
+    errorDetails?: string;
 }
 
 export interface ChatState {

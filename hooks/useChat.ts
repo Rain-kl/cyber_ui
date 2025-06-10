@@ -34,7 +34,7 @@ export function useChat() {
     );
 
     const updateMessage = useCallback(
-        (messageId: string, content: string, isCompleted?: boolean) => {
+        (messageId: string, content: string, isCompleted?: boolean, isError?: boolean, errorDetails?: string) => {
             setState((prev) => ({
                 ...prev,
                 messages: prev.messages.map((msg) => {
@@ -46,10 +46,12 @@ export function useChat() {
                                 ...msg,
                                 content,
                                 isThinking: parsed.hasActiveThinking,
+                                isError: isError || false,
+                                errorDetails: errorDetails,
                             };
 
                             // 如果消息完成，计算统计信息
-                            if (isCompleted && msg.startTime) {
+                            if (isCompleted && msg.startTime && !isError) {
                                 const endTime = new Date();
                                 const durationMs = endTime.getTime() -
                                     msg.startTime.getTime();
@@ -65,7 +67,7 @@ export function useChat() {
 
                             return updatedMsg;
                         }
-                        return { ...msg, content };
+                        return { ...msg, content, isError: isError || false, errorDetails: errorDetails };
                     }
                     return msg;
                 }),
@@ -104,7 +106,16 @@ export function useChat() {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    let errorMessage = `HTTP ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        if (errorData.error) {
+                            errorMessage = errorData.error;
+                        }
+                    } catch (e) {
+                        // 如果无法解析错误响应，使用默认消息
+                    }
+                    throw new Error(errorMessage);
                 }
 
                 if (!response.body) {
@@ -149,13 +160,34 @@ export function useChat() {
                 updateMessage(assistantMessageId, streamedContent, true);
             } catch (error) {
                 console.error("OpenAI API 请求失败:", error);
-                // 如果出错，显示错误消息
+                
+                // 构建用户友好的错误消息
+                let errorMessage = "抱歉，获取回答时出现错误。请稍后重试。";
+                let errorDetails = "";
+                
+                if (error instanceof Error) {
+                    // 根据错误类型提供更具体的信息
+                    if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+                        errorMessage = "网络连接失败，请检查您的网络连接后重试。";
+                    } else if (error.message.includes("HTTP error! status: 500")) {
+                        errorMessage = "服务器内部错误，请稍后重试。";
+                    } else if (error.message.includes("HTTP error! status: 401")) {
+                        errorMessage = "身份验证失败，请检查 API 密钥配置。";
+                    } else if (error.message.includes("HTTP error! status: 429")) {
+                        errorMessage = "请求过于频繁，请稍后重试。";
+                    }
+                    errorDetails = error.message;
+                } else {
+                    errorDetails = String(error);
+                }
+                
+                // 标记消息为错误状态
                 updateMessage(
                     assistantMessageId,
-                    "抱歉，获取回答时出现错误。请检查网络连接或稍后重试。\n\n错误详情：" +
-                        (error instanceof Error
-                            ? error.message
-                            : String(error)),
+                    errorMessage,
+                    true, // isCompleted
+                    true, // isError
+                    errorDetails // errorDetails
                 );
             } finally {
                 // Clear loading state

@@ -90,3 +90,23 @@ body {
     transform: scale(1);
   }
 }
+
+/* Error card animations and styles */
+.error-card {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-details-transition {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}

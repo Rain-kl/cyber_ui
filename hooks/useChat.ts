@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { ChatState, Message } from "@/types/chat";
 import { generateId } from "@/utils";
-import { API_URLS } from "@/utils/api";
 import { parseMessageContent } from "@/utils/messageParser";
 
 export function useChat() {
@@ -88,7 +87,7 @@ export function useChat() {
 
             try {
                 // 使用 OpenAI API 发送流式请求
-                const response = await fetch(API_URLS.CHAT, {
+                const response = await fetch("/api/chat", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -166,18 +165,6 @@ export function useChat() {
         [addMessage, updateMessage, state.messages],
     );
 
-    const clearMessageContent = useCallback(
-        (messageId: string) => {
-            setState((prev) => ({
-                ...prev,
-                messages: prev.messages.map((msg) =>
-                    msg.id === messageId ? { ...msg, content: "" } : msg
-                ),
-            }));
-        },
-        [],
-    );
-
     const removeMessagesFromIndex = useCallback(
         (fromIndex: number) => {
             setState((prev) => ({
@@ -188,16 +175,10 @@ export function useChat() {
         [],
     );
 
-    const clearMessages = useCallback(() => {
-        setState((prev) => ({ ...prev, messages: [] }));
-    }, []);
-
     return {
         messages: state.messages,
         isLoading: state.isLoading,
         sendMessage,
-        clearMessages,
-        clearMessageContent,
         removeMessagesFromIndex,
     };
 }

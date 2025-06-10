@@ -7,11 +7,24 @@ import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import TopBar from './TopBar';
 
+interface ChatHistoryRecord {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
+
+interface HistoryMessage {
+  id: string;
+  content: string;
+  sender: 'user' | 'assistant';
+  timestamp: Date;
+}
+
 export default function ChatInterface() {
-  const { messages, isLoading, sendMessage, clearMessageContent, removeMessagesFromIndex } = useChat();
+  const { messages, isLoading, sendMessage, removeMessagesFromIndex } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showHistoryMessages, setShowHistoryMessages] = useState(false);
-  const [historyMessages, setHistoryMessages] = useState<any[]>([]);
+  const [historyMessages, setHistoryMessages] = useState<HistoryMessage[]>([]);
 
   // Auto scroll to bottom when new messages are added
   useEffect(() => {
@@ -45,9 +58,9 @@ export default function ChatInterface() {
     }
   };
 
-  const handleHistoryLoaded = (records: any[]) => {
+  const handleHistoryLoaded = (records: ChatHistoryRecord[]) => {
     // 将历史记录转换为消息格式
-    const convertedMessages = records.map((record, index) => ({
+    const convertedMessages: HistoryMessage[] = records.map((record, index) => ({
       id: `history-${index}`,
       content: record.content,
       sender: record.role,

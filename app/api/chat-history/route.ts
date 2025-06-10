@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 interface ChatHistoryRecord {
     role: "user" | "assistant";
@@ -12,10 +12,7 @@ interface ChatHistoryResponse {
     data: ChatHistoryRecord[];
 }
 
-export async function GET(
-    request: NextRequest,
-): Promise<NextResponse<ChatHistoryResponse>> {
-    request.headers.get("Content-Type") === "application/json";
+export async function GET(): Promise<NextResponse<ChatHistoryResponse>> {
     try {
         // 模拟聊天记录数据，实际项目中这里应该从数据库获取
         const mockChatHistory: ChatHistoryRecord[] = [

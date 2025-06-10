@@ -24,8 +24,6 @@ interface TopBarProps {
 
 export default function TopBar({ onHistoryLoaded, showHistoryMessages, onReturnToChat }: TopBarProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  const [historyRecords, setHistoryRecords] = useState<ChatHistoryRecord[]>([]);
 
   const fetchChatHistory = async () => {
     setIsLoading(true);
@@ -34,8 +32,6 @@ export default function TopBar({ onHistoryLoaded, showHistoryMessages, onReturnT
       const data: ChatHistoryResponse = await response.json();
       
       if (data.code === 200) {
-        setHistoryRecords(data.data);
-        setShowHistory(true);
         onHistoryLoaded(data.data);
       } else {
         console.error('Failed to fetch chat history:', data.msg);
@@ -53,17 +49,6 @@ export default function TopBar({ onHistoryLoaded, showHistoryMessages, onReturnT
     } else {
       fetchChatHistory();
     }
-  };
-
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   return (

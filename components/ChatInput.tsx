@@ -14,7 +14,6 @@ export default function ChatInput({
   isLoading = false,
 }: ChatInputProps) {
   const [inputValue, setInputValue] = useState('');
-  const [isDeepSearchEnabled, setIsDeepSearchEnabled] = useState(false);
   const [isThinkEnabled, setIsThinkEnabled] = useState(false);
   const [textareaHeight, setTextareaHeight] = useState(32);
 

@@ -11,7 +11,7 @@ export default function ChatHeader({
   title,
   subtitle = 'How can I help you today?',
 }: ChatHeaderProps) {
-  const [greeting, setGreeting] = useState('Good evening, Wyrm');
+  const [greeting, setGreeting] = useState('Good evening');
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -19,11 +19,11 @@ export default function ChatHeader({
       const hour = now.getHours();
       
       if (hour >= 5 && hour < 12) {
-        setGreeting('Good morning, Wyrm');
+        setGreeting('Good morning');
       } else if (hour >= 12 && hour < 17) {
-        setGreeting('Good afternoon, Wyrm');
+        setGreeting('Good afternoon');
       } else {
-        setGreeting('Good evening, Wyrm');
+        setGreeting('Good evening');
       }
     };
 
@@ -37,7 +37,7 @@ export default function ChatHeader({
   return (
     <div className="text-center px-8">
       <h1 className="font-normal text-gray-800 mb-4 whitespace-nowrap" style={{ fontSize: '40px' }}>
-        {title || greeting}
+        {title || greeting}, User
       </h1>
       {subtitle && <p className="text-gray-600 text-lg">{subtitle}</p>}
     </div>

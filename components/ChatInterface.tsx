@@ -88,8 +88,8 @@ export default function ChatInterface() {
               <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-max">
                 <ChatHeader />
               </div>
-              {/* 输入框放在屏幕中心 */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl px-4">
+              {/* 输入框放在屏幕中心，向上移动40px */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl px-4" style={{ top: 'calc(50% - 40px)' }}>
                 <ChatInput
                   onSendMessage={sendMessage}
                   disabled={isLoading}

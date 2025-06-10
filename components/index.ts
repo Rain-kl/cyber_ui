@@ -6,3 +6,5 @@ export { default as ToolComponent } from "./ToolComponent";
 export { default as UserContentComponent } from "./UserContentComponent";
 export { default as ErrorCard } from "./ErrorCard";
 export { default as ThemeToggle } from "../app/ui/ThemeToggle";
+export { default as GenericXmlCard } from "./GenericXmlCard";
+export { default as ExpertCallCard } from "./ExpertCallCard";

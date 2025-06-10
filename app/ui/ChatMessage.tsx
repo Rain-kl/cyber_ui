@@ -1,7 +1,7 @@
 import { Message } from '@/types/chat';
 import { copyToClipboard } from '@/app/lib';
 import { parseMessageContent } from '@/app/lib/messageParser';
-import { ErrorCard, ThinkingComponent, ToolComponent } from '@/components';
+import { ErrorCard, ThinkingComponent, ToolComponent, GenericXmlCard, ExpertCallCard } from '@/components';
 import { useThemeColors } from '@/themes/utils';
 
 interface ChatMessageProps {
@@ -17,11 +17,11 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
   // 解析消息内容，提取思考部分
   const parsedMessage = isUser ? null : parseMessageContent(message.content);
 
-  // 判断消息是否完成 - 如果正在加载且这是最后一条助手消息，或者有未完成的思考/工具调用，或者是错误状态
-  const isMessageCompleted = isUser || message.isError || (!isLoading && (!parsedMessage || (!parsedMessage.hasActiveThinking && !parsedMessage.hasActiveTool)));
+  // 判断消息是否完成 - 如果正在加载且这是最后一条助手消息，或者有未完成的思考/工具调用/专家调用，或者是错误状态
+  const isMessageCompleted = isUser || message.isError || (!isLoading && (!parsedMessage || (!parsedMessage.hasActiveThinking && !parsedMessage.hasActiveTool && !parsedMessage.hasActiveExpert)));
 
   const handleCopy = async () => {
-    // 复制时只复制文本内容和用户内容，不包含思考部分和工具部分
+    // 复制时只复制文本内容和用户内容，不包含思考部分、工具部分、专家调用部分和通用XML部分
     let contentToCopy = message.content;
     if (parsedMessage) {
       contentToCopy = parsedMessage.segments
@@ -82,6 +82,25 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                 parameters={segment.toolParameters || []}
                 isCompleted={segment.isToolCompleted || false}
                 result={segment.toolResult}
+              />
+            );
+          } else if (segment.type === 'expert_call') {
+            return (
+              <ExpertCallCard
+                key={index}
+                expertName={segment.expertName || '未知智能体'}
+                message={segment.expertMessage || ''}
+                output={segment.expertOutput}
+                isCompleted={segment.isExpertCompleted || false}
+              />
+            );
+          } else if (segment.type === 'generic_xml') {
+            return (
+              <GenericXmlCard
+                key={index}
+                tagName={segment.xmlTagName || '未知标签'}
+                content={segment.xmlContent || ''}
+                rawContent={segment.content}
               />
             );
           } else if (segment.type === 'user') {

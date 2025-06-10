@@ -23,23 +23,57 @@ interface HistoryMessage {
 export default function ChatInterface() {
   const { messages, isLoading, sendMessage, removeMessagesFromIndex } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showHistoryMessages, setShowHistoryMessages] = useState(false);
   const [historyMessages, setHistoryMessages] = useState<HistoryMessage[]>([]);
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const colors = useThemeColors();
 
-  // Auto scroll to bottom when new messages are added
+  // 检查是否在底部的函数
+  const isScrolledToBottom = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return false;
+    
+    const threshold = 50; // 允许50px的误差范围
+    return container.scrollHeight - container.scrollTop - container.clientHeight <= threshold;
+  };
+
+  // 滚动事件处理
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    
+    // 如果用户滚动到底部，启用自动滚动
+    if (isScrolledToBottom()) {
+      setShouldAutoScroll(true);
+    } else {
+      // 如果用户向上滚动离开底部，禁用自动滚动
+      setShouldAutoScroll(false);
+    }
+  };
+
+  // Auto scroll to bottom when new messages are added (only if auto scroll is enabled)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (shouldAutoScroll && !showHistoryMessages) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, shouldAutoScroll, showHistoryMessages]);
 
   // Auto scroll to bottom when showing history messages
   useEffect(() => {
     if (showHistoryMessages) {
+      setShouldAutoScroll(true); // 显示历史记录时重置自动滚动状态
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
   }, [showHistoryMessages]);
+
+  // 当开始加载时，如果是在底部，确保保持自动滚动
+  useEffect(() => {
+    if (isLoading && isScrolledToBottom()) {
+      setShouldAutoScroll(true);
+    }
+  }, [isLoading]);
 
   const hasMessages = messages.length > 0;
 
@@ -71,17 +105,26 @@ export default function ChatInterface() {
     setShowHistoryMessages(true);
   };
 
+  const handleReturnToChat = () => {
+    setShowHistoryMessages(false);
+    setShouldAutoScroll(true); // 返回聊天时重置自动滚动状态
+  };
+
   return (
     <div className="flex flex-col h-screen" style={{ backgroundColor: colors.bg.primary() }}>
       {/* 顶栏 */}
       <TopBar 
         onHistoryLoaded={handleHistoryLoaded} 
         showHistoryMessages={showHistoryMessages}
-        onReturnToChat={() => setShowHistoryMessages(false)}
+        onReturnToChat={handleReturnToChat}
       />
       
       {/* Chat Messages Area - 添加顶部填充以避免被固定顶栏遮挡 */}
-      <div className="flex-1 overflow-y-auto pt-16">
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto pt-16"
+        onScroll={handleScroll}
+      >
         <div className="chat-message-container">
           {!hasMessages && !showHistoryMessages ? (
             <div className="relative h-full">

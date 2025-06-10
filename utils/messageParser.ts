@@ -189,24 +189,29 @@ export function parseMessageContent(rawContent: string): ParsedMessage {
 function parseToolContent(
     content: string,
 ): { toolName: string; parameters: ToolParameter[] } {
-    const lines = content.trim().split("\n");
+    const trimmedContent = content.trim();
     let toolName = "";
     const parameters: ToolParameter[] = [];
 
-    for (const line of lines) {
-        const trimmedLine = line.trim();
-        if (!trimmedLine) continue;
+    // 首先查找工具名标签（第一层嵌套的标签）
+    const toolNameMatch = trimmedContent.match(/<([^>]+)>/);
+    if (toolNameMatch) {
+        toolName = toolNameMatch[1];
 
-        // 匹配 <tag_name>value</tag_name> 格式
-        const tagMatch = trimmedLine.match(/<([^>]+)>(.*?)<\/\1>/);
-        if (tagMatch) {
-            const [, tagName, value] = tagMatch;
-            if (!toolName) {
-                toolName = tagName;
-            } else {
+        // 提取工具标签内部的内容
+        const toolContentMatch = trimmedContent.match(
+            new RegExp(`<${toolName}>(.*?)<\/${toolName}>`, "s"),
+        );
+        if (toolContentMatch) {
+            const innerContent = toolContentMatch[1];
+
+            // 解析内部的参数标签
+            const paramMatches = innerContent.matchAll(/<([^>]+)>(.*?)<\/\1>/g);
+            for (const match of paramMatches) {
+                const [, paramName, paramValue] = match;
                 parameters.push({
-                    name: tagName,
-                    value: value,
+                    name: paramName,
+                    value: paramValue.trim(),
                 });
             }
         }

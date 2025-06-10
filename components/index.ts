@@ -8,3 +8,4 @@ export { default as StatusCard } from "./StatusCard";
 export { default as ToolComponent } from "./ToolComponent";
 export { default as UserContentComponent } from "./UserContentComponent";
 export { default as ErrorCard } from "./ErrorCard";
+export { default as ThemeToggle } from "./ThemeToggle";

@@ -4,6 +4,7 @@ import { parseMessageContent } from '@/utils/messageParser';
 import ThinkingComponent from './ThinkingComponent';
 import ToolComponent from './ToolComponent';
 import ErrorCard from './ErrorCard';
+import { useThemeColors } from '@/themes/utils';
 
 interface ChatMessageProps {
   message: Message;
@@ -13,6 +14,7 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ message, onRetry, isLoading = false }: ChatMessageProps) {
   const isUser = message.sender === 'user';
+  const colors = useThemeColors();
 
   // 解析消息内容，提取思考部分
   const parsedMessage = isUser ? null : parseMessageContent(message.content);
@@ -91,12 +93,12 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                 style={{
                   fontSize: '16px',
                   lineHeight: '1.6',
-                  // color: '#2c3e50',
+                  color: colors.text.primary(),
                   margin: '16px 0',
                   padding: '12px 16px',
-                  // backgroundColor: '#f8f9fa',
+                  backgroundColor: colors.bg.card(),
                   borderRadius: '8px',
-                  // border: '1px solid #e9ecef',
+                  border: `1px solid ${colors.border.secondary()}`,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   letterSpacing: '0.02em',
                   wordBreak: 'break-word',
@@ -119,10 +121,15 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
         // User message layout
         <div className="flex justify-start">
           <div
-            className="px-4 py-3 border border-gray-300 flex items-start gap-3"
-            style={{ backgroundColor: '#EEECE3', minHeight: '28px', borderRadius: '10px' }}
+            className="px-4 py-3 border flex items-start gap-3"
+            style={{ 
+              backgroundColor: colors.bg.surface(), 
+              borderColor: colors.border.primary(),
+              minHeight: '28px', 
+              borderRadius: '10px' 
+            }}
           >
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 user-avatar">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 user-avatar" style={{ backgroundColor: colors.special.avatar() }}>
               U
             </div>
             {renderContent()}
@@ -143,7 +150,11 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
               <div className="assistant-message-actions">
                 {/* 显示统计信息在复制按钮左边 */}
                 {isMessageCompleted && message.startTime && message.endTime && message.tokensPerSecond && (
-                  <div className="text-xs text-gray-500 mr-2 flex items-center" style={{ height: '32px' }}>
+                  <div className="mr-2 flex items-center" style={{ 
+                    fontSize: '12px',
+                    color: colors.text.muted(),
+                    height: '32px' 
+                  }}>
                     {((message.endTime.getTime() - message.startTime.getTime()) / 1000).toFixed(1)}s • {message.tokensPerSecond.toFixed(1)} 字符/秒
                   </div>
                 )}
@@ -152,12 +163,22 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                 {isMessageCompleted && (
                   <button
                     onClick={handleCopy}
-                    className="rounded-md transition-colors flex items-center justify-center hover:bg-[#EEECE3]"
-                    style={{ height: '32px', width: '32px' }}
+                    className="rounded-md transition-colors flex items-center justify-center"
+                    style={{ 
+                      height: '32px', 
+                      width: '32px',
+                      color: colors.text.muted()
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = colors.interactive.hover();
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
                     title="Copy"
                   >
                     <svg
-                      className="w-4 h-4 text-gray-500"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -175,8 +196,12 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                 {/* 重试按钮或正在输出状态 */}
                 {!isMessageCompleted ? (
                   <div 
-                    className="px-3 text-xs text-gray-600 rounded-md flex items-center gap-1"
-                    style={{ height: '32px' }}
+                    className="px-3 rounded-md flex items-center gap-1"
+                    style={{ 
+                      height: '32px',
+                      fontSize: '12px',
+                      color: colors.text.muted()
+                    }}
                   >
                     <span 
                       className="animate-pulse"
@@ -192,8 +217,18 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                   onRetry && (
                     <button
                       onClick={onRetry}
-                      className="px-3 text-xs text-gray-600 rounded-md transition-colors flex items-center gap-1 hover:bg-[#EEECE3]"
-                      style={{ height: '32px' }}
+                      className="px-3 rounded-md transition-colors flex items-center gap-1"
+                      style={{ 
+                        height: '32px',
+                        fontSize: '12px',
+                        color: colors.text.muted()
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = colors.interactive.hover();
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}
                       title="Retry"
                     >
                       <svg
@@ -209,14 +244,23 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                         />
                         </svg>
-                        <p className="text-gray-600" style={{ margin: 0, fontSize: '14px' }} title="Retry">
+                        <p style={{ 
+                          margin: 0, 
+                          fontSize: '14px',
+                          color: colors.text.muted()
+                        }} title="Retry">
                         Retry</p>
                     </button>
                   )
                 )}
               </div>
               {isMessageCompleted && (
-                <p className="disclaimer">
+                <p className="disclaimer" style={{ 
+                  textAlign: 'right',
+                  fontSize: '0.75rem',
+                  color: colors.text.muted(),
+                  marginTop: '0.5rem'
+                }}>
                   Assistant can make mistakes. Please double-check responses.
                 </p>
               )}

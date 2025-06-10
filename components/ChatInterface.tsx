@@ -6,6 +6,7 @@ import ChatHeader from '@/components/ChatHeader';
 import ChatMessage from '@/components/ChatMessage';
 import ChatInput from '@/components/ChatInput';
 import TopBar from './TopBar';
+import { useThemeColors } from '@/themes/utils';
 
 interface ChatHistoryRecord {
   role: 'user' | 'assistant';
@@ -25,6 +26,7 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showHistoryMessages, setShowHistoryMessages] = useState(false);
   const [historyMessages, setHistoryMessages] = useState<HistoryMessage[]>([]);
+  const colors = useThemeColors();
 
   // Auto scroll to bottom when new messages are added
   useEffect(() => {
@@ -71,7 +73,7 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen" style={{ backgroundColor: '#F9F8F4' }}>
+    <div className="flex flex-col h-screen" style={{ backgroundColor: colors.bg.primary() }}>
       {/* 顶栏 */}
       <TopBar 
         onHistoryLoaded={handleHistoryLoaded} 
@@ -103,8 +105,11 @@ export default function ChatInterface() {
               {/* 显示历史记录或当前对话 */}
               {showHistoryMessages ? (
                 <>
-                  <div className="mb-6 p-4 border-l-4 rounded-lg" style={{ backgroundColor: '#ECE9E0', borderColor: '#D4CFC4' }}>
-                    <h3 className="text-lg font-medium" style={{ color: '#8B7355' }}>历史对话记录</h3>
+                  <div className="mb-6 p-4 border-l-4 rounded-lg" style={{ 
+                    backgroundColor: colors.bg.surface(), 
+                    borderColor: colors.border.primary() 
+                  }}>
+                    <h3 className="text-lg font-medium" style={{ color: colors.text.secondary() }}>历史对话记录</h3>
                   </div>
                   {historyMessages.map((message) => (
                     <ChatMessage
@@ -142,7 +147,7 @@ export default function ChatInterface() {
                         <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium bg-blue-500">
                           U
                         </div>
-                        <div className="px-4 py-3 rounded-lg border border-gray-300" style={{ backgroundColor: '#F9F8F4' }}>
+                        <div className="px-4 py-3 rounded-lg border border-gray-300" style={{ backgroundColor: colors.bg.primary() }}>
                           <div className="flex items-center gap-1">
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                             <div

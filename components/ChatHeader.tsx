@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useThemeColors } from '@/themes/utils';
 
 interface ChatHeaderProps {
   title?: string;
@@ -12,6 +13,7 @@ export default function ChatHeader({
   subtitle = 'How can I help you today?',
 }: ChatHeaderProps) {
   const [greeting, setGreeting] = useState('Good evening');
+  const colors = useThemeColors();
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -36,10 +38,13 @@ export default function ChatHeader({
 
   return (
     <div className="text-center px-8">
-      <h1 className="font-normal text-gray-800 mb-4 whitespace-nowrap" style={{ fontSize: '40px' }}>
+      <h1 className="font-normal mb-4 whitespace-nowrap" style={{ 
+        fontSize: '40px',
+        color: colors.text.primary()
+      }}>
         {title || greeting}, User
       </h1>
-      {subtitle && <p className="text-gray-600 text-lg">{subtitle}</p>}
+      {subtitle && <p className="text-lg" style={{ color: colors.text.secondary() }}>{subtitle}</p>}
     </div>
   );
 }

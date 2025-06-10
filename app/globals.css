@@ -1,8 +1,31 @@
 @import 'tailwindcss';
 
+:root {
+  /* 主题颜色变量 - 由ThemeProvider动态设置 */
+  --bg-primary: #F9F8F4;
+  --bg-secondary: #FFFFFF;
+  --bg-surface: #ECE9E0;
+  --bg-card: #F8F7F3;
+  --bg-input: #FFFFFF;
+  
+  --text-primary: #171717;
+  --text-secondary: #374151;
+  --text-muted: #6B7280;
+  
+  --border-primary: #D1D5DB;
+  --border-secondary: #E5E7EB;
+  --border-input: #D1D5DB;
+  
+  --scrollbar-track: #F9F8F4;
+  --scrollbar-thumb: #D1D1D1;
+  --scrollbar-thumb-hover: #B8B8B8;
+  
+  --avatar-bg: #353533;
+}
+
 body {
-  background: #F9F8F4;
-  color: #171717;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
     'Cantarell', sans-serif;
@@ -16,16 +39,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F9F8F4;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D1D1D1;
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8B8B8;
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Hide scrollbar for ChatInput textarea */
@@ -61,7 +84,7 @@ body {
 }
 
 .user-avatar {
-  background-color: #353533;
+  background-color: var(--avatar-bg);
   color: white;
 }
 

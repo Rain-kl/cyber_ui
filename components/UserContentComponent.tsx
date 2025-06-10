@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { useThemeColors } from '@/themes/utils';
 
 interface UserContentComponentProps {
     content: string;
@@ -8,15 +9,16 @@ interface UserContentComponentProps {
 export const UserContentComponent: React.FC<UserContentComponentProps> = ({
     content
 }) => {
+    const colors = useThemeColors();
+    
     return (
         <Box 
             sx={{ 
                 my: 2,
                 p: 2,
-                backgroundColor: '#f5f7fa',
+                backgroundColor: colors.bg.card(),
                 borderRadius: 2,
-                border: '1px solid #F8F7F3',
-                // boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                border: `1px solid ${colors.border.secondary()}`,
             }}
         >
             <Typography
@@ -24,7 +26,7 @@ export const UserContentComponent: React.FC<UserContentComponentProps> = ({
                 sx={{
                     fontSize: '16px',
                     lineHeight: 1.6,
-                    color: '#333',
+                    color: colors.text.primary(),
                     margin: 0,
                     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     letterSpacing: '0.02em',

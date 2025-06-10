@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { ToolParameter } from '@/utils/messageParser';
+import { useThemeColors } from '@/themes/utils';
 
 interface ToolComponentProps {
     toolName: string;
@@ -23,14 +24,16 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
     isCompleted,
     result
 }) => {
+    const colors = useThemeColors();
+    
     return (
         <Card
             sx={{
                 my: 2,
-                border: '1px solid #e0e0e0',
+                border: `1px solid ${colors.border.primary()}`,
                 borderRadius: 2,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                backgroundColor: isCompleted ? '#F8F7F3' : '#F8F7F3'
+                backgroundColor: isCompleted ? colors.bg.card() : colors.bg.card()
             }}
         >
             <CardContent>
@@ -43,7 +46,7 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
                             sx={{
                                 fontWeight: 'bold',
                                 mb: 1,
-                                color: isCompleted ? '#2e7d32' : '#f57c00'
+                                color: isCompleted ? colors.text.status.success() : colors.text.status.warning()
                             }}
                         >
                             {isCompleted ? '工具执行完成: ' : '正在使用工具: '}{toolName}
@@ -57,13 +60,12 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
                                 </Typography>
                                 {parameters.map((param, index) => (
                                     <Box key={index} sx={{ mb: 0.5 }}>
-                                        <Typography variant="body2" component="div">
-                                            <Box component="span" sx={{ fontWeight: 'medium', color: '#1976d2' }}>
-                                                {param.name}:
-                                            </Box>
-                                            <Box component="span" sx={{ ml: 1 }}>
-                                                {param.value}
-                                            </Box>
+                                        <Typography variant="body2" component="div">                                        <Box component="span" sx={{ fontWeight: 'medium', color: colors.special.link() }}>
+                                            {param.name}:
+                                        </Box>
+                                        <Box component="span" sx={{ ml: 1, color: colors.text.primary() }}>
+                                            {param.value}
+                                        </Box>
                                         </Typography>
                                     </Box>
                                 ))}
@@ -72,11 +74,11 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
 
                         {/* 工具结果 */}
                         {isCompleted && result && (
-                            <Box sx={{ mt: 2, p: 2, backgroundColor: '#e8f5e8', borderRadius: 1 }}>
-                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 'medium', color: '#2e7d32' }}>
+                            <Box sx={{ mt: 2, p: 2, backgroundColor: colors.bg.status.success(), borderRadius: 1 }}>
+                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 'medium', color: colors.text.status.success() }}>
                                     执行结果：
                                 </Typography>
-                                <Typography variant="body2" sx={{ color: '#1b5e20' }}>
+                                <Typography variant="body2" sx={{ color: colors.text.status.success() }}>
                                     {result}
                                 </Typography>
                             </Box>
@@ -91,7 +93,7 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
                                 label="完成"
                                 color="success"
                                 size="small"
-                                sx={{ bgcolor: '#4caf50', color: 'white' }}
+                                sx={{ bgcolor: colors.bg.status.success(), color: colors.text.status.success() }}
                             />
                         ) : (
                             <Box display="flex" alignItems="center" gap={1}>
@@ -100,7 +102,7 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
                                     label="执行中"
                                     color="warning"
                                     size="small"
-                                    sx={{ bgcolor: '#ff9800', color: 'white' }}
+                                    sx={{ bgcolor: colors.bg.status.warning(), color: colors.text.status.warning() }}
                                 />
                             </Box>
                         )}

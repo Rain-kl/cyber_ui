@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useThemeColors } from '@/themes/utils';
 
 interface ErrorCardProps {
   errorMessage: string;
@@ -8,16 +9,21 @@ interface ErrorCardProps {
 
 export default function ErrorCard({ errorMessage, errorDetails, onRetry }: ErrorCardProps) {
   const [showDetails, setShowDetails] = useState(false);
+  const colors = useThemeColors();
 
   return (
-    <div className="mb-4 p-4 border border-red-200 rounded-lg error-card" style={{ backgroundColor: '#FEF2F2' }}>
+    <div className="mb-4 p-4 border rounded-lg error-card" style={{ 
+      backgroundColor: colors.bg.status.error(),
+      borderColor: colors.border.status.error()
+    }}>
       <div className="flex items-start gap-3">
         {/* 错误图标 */}
         <div className="flex-shrink-0">
           <svg 
-            className="w-5 h-5 text-red-500 mt-0.5" 
+            className="w-5 h-5 mt-0.5" 
             fill="currentColor" 
             viewBox="0 0 20 20"
+            style={{ color: colors.text.status.error() }}
           >
             <path 
               fillRule="evenodd" 
@@ -29,12 +35,12 @@ export default function ErrorCard({ errorMessage, errorDetails, onRetry }: Error
         
         <div className="flex-1">
           {/* 错误标题 */}
-          <div className="text-red-800 font-medium mb-2">
+          <div className="font-medium mb-2" style={{ color: colors.text.status.error() }}>
             请求失败
           </div>
           
           {/* 错误消息 */}
-          <div className="text-red-700 text-sm mb-3">
+          <div className="text-sm mb-3" style={{ color: colors.text.status.error() }}>
             {errorMessage}
           </div>
           
@@ -43,7 +49,8 @@ export default function ErrorCard({ errorMessage, errorDetails, onRetry }: Error
             <div className="mb-3">
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="text-red-600 text-sm hover:text-red-800 flex items-center gap-1"
+                className="text-sm flex items-center gap-1 hover:opacity-80"
+                style={{ color: colors.text.status.error() }}
               >
                 <span>{showDetails ? '隐藏' : '显示'}详细信息</span>
                 <svg 
@@ -62,7 +69,11 @@ export default function ErrorCard({ errorMessage, errorDetails, onRetry }: Error
               </button>
               
               {showDetails && (
-                <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-xs font-mono overflow-x-auto error-details-transition">
+                <div className="mt-2 p-3 border rounded text-xs font-mono overflow-x-auto error-details-transition" style={{
+                  backgroundColor: colors.bg.status.error(),
+                  borderColor: colors.border.status.error(),
+                  color: colors.text.status.error()
+                }}>
                   {errorDetails}
                 </div>
               )}
@@ -73,7 +84,19 @@ export default function ErrorCard({ errorMessage, errorDetails, onRetry }: Error
           {onRetry && (
             <button
               onClick={onRetry}
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-red-700 bg-red-100 hover:bg-red-200 border border-red-300 rounded-md transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md transition-colors"
+              title='重新尝试请求'
+              style={{
+                color: colors.text.status.error(),
+                backgroundColor: colors.bg.status.error(),
+                borderColor: colors.border.status.error()
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '0.8';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '1';
+              }}
             >
               <svg 
                 className="w-4 h-4" 

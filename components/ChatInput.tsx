@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useThemeColors } from '@/themes/utils';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -16,6 +17,7 @@ export default function ChatInput({
   const [inputValue, setInputValue] = useState('');
   const [isThinkEnabled, setIsThinkEnabled] = useState(false);
   const [textareaHeight, setTextareaHeight] = useState(32);
+  const colors = useThemeColors();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,17 +49,22 @@ export default function ChatInput({
   };
 
   return (
-    <div className="flex items-end justify-center p-2" style={{ backgroundColor: '#F9F8F4' }}>
+    <div className="flex items-end justify-center p-2" style={{ backgroundColor: colors.bg.primary() }}>
       <style>{`
         .custom-textarea::-webkit-scrollbar {
           display: none;
         }
       `}</style>
-      <div className="bg-white rounded-3xl shadow shadow-black/5 ring-1 ring-gray-200 hover:ring-gray-300 focus-within:ring-gray-300 duration-100 p-2" style={{ width: '752px', minHeight: '99px' }}>
+      <div className="rounded-3xl shadow-lg shadow-black/10 duration-100 p-2" style={{ 
+        backgroundColor: colors.bg.input(),
+        width: '752px', 
+        minHeight: '99px',
+        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+      }}>
         <form onSubmit={handleSubmit} className="flex flex-col">
           {/* 上栏 - 输入区域 */}
           <div className="relative" style={{ minHeight: '32px' }}>
-            <span className="absolute left-2 top-2 text-gray-500 pointer-events-none select-none z-10">
+            <span className="absolute left-2 top-2 pointer-events-none select-none z-10" style={{ color: colors.text.muted() }}>
               {!inputValue && placeholder}
             </span>
             <textarea
@@ -65,12 +72,13 @@ export default function ChatInput({
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               disabled={disabled}
-              className="w-full px-2 py-2 bg-transparent focus:outline-none text-gray-900 resize-none overflow-y-auto custom-textarea"
+              className="w-full px-2 py-2 bg-transparent focus:outline-none resize-none overflow-y-auto custom-textarea"
               style={{ 
                 height: `${textareaHeight}px`,
                 maxHeight: '200px',
                 scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
+                msOverflowStyle: 'none',
+                color: colors.text.primary()
               }}
               rows={1}
             />
@@ -82,7 +90,21 @@ export default function ChatInput({
               {/* Attach Button */}
               <button
                 type="button"
-                className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors duration-100"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full border transition-all duration-200 shadow-sm hover:shadow-md"
+                style={{
+                  borderColor: colors.border.primary(),
+                  color: colors.text.muted(),
+                  backgroundColor: 'transparent',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = colors.interactive.hover();
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                }}
                 aria-label="附加"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="stroke-2">
@@ -112,12 +134,29 @@ export default function ChatInput({
               <button
                 type="button"
                 onClick={() => setIsThinkEnabled(!isThinkEnabled)}
-                className={`inline-flex items-center justify-center gap-2 h-10 px-4 text-sm rounded-full transition-colors duration-100 cursor-pointer ${
-                  isThinkEnabled 
-                    ? 'text-blue-700 border border-blue-200' 
-                    : 'bg-transparent text-gray-600 border border-gray-200 hover:bg-gray-50'
-                }`}
-                style={isThinkEnabled ? { backgroundColor: '#ECF4FC' } : {}}
+                className="inline-flex items-center justify-center gap-2 h-10 px-4 text-sm rounded-full transition-all duration-200 cursor-pointer border shadow-sm hover:shadow-md"
+                style={{
+                  color: isThinkEnabled ? colors.text.status.info() : colors.text.secondary(),
+                  backgroundColor: isThinkEnabled ? colors.bg.status.info() : 'transparent',
+                  borderColor: isThinkEnabled ? colors.border.status.info() : colors.border.primary(),
+                  boxShadow: isThinkEnabled ? '0 2px 4px 0 rgba(59, 130, 246, 0.15)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isThinkEnabled) {
+                    e.currentTarget.style.backgroundColor = colors.interactive.hover();
+                    e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)';
+                  } else {
+                    e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(59, 130, 246, 0.25), 0 2px 4px -2px rgba(59, 130, 246, 0.15)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isThinkEnabled) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                  } else {
+                    e.currentTarget.style.boxShadow = '0 2px 4px 0 rgba(59, 130, 246, 0.15)';
+                  }
+                }}
                 aria-label="Think"
                 title="启用思考模式，AI将展示详细的思考过程和推理步骤"
               >
@@ -135,20 +174,24 @@ export default function ChatInput({
             <button
               type="submit"
               disabled={!inputValue.trim() || disabled || isLoading}
-              className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 ${
-                inputValue.trim() && !isLoading
-                  ? 'text-white shadow-sm'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-              } disabled:opacity-60 disabled:cursor-not-allowed`}
-              style={inputValue.trim() && !isLoading ? { backgroundColor: '#1C1A19' } : {}}
+              className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed shadow-md hover:shadow-lg disabled:shadow-sm"
+              style={{
+                backgroundColor: inputValue.trim() && !isLoading ? colors.bg.button.primary() : colors.bg.button.disabled(),
+                color: inputValue.trim() && !isLoading ? colors.text.inverse() : colors.interactive.disabled(),
+                boxShadow: inputValue.trim() && !isLoading ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+              }}
               onMouseEnter={(e) => {
                 if (inputValue.trim() && !isLoading) {
-                  e.currentTarget.style.backgroundColor = '#0F0E0D';
+                  // 稍微加深颜色用于悬停效果
+                  const primaryBg = colors.bg.button.primary();
+                  e.currentTarget.style.backgroundColor = primaryBg === '#1C1A19' ? '#0F0E0D' : primaryBg;
+                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (inputValue.trim() && !isLoading) {
-                  e.currentTarget.style.backgroundColor = '#1C1A19';
+                  e.currentTarget.style.backgroundColor = colors.bg.button.primary();
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)';
                 }
               }}
               aria-label={isLoading ? "正在发送" : "发送"}

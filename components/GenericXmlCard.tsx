@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useThemeColors } from '@/themes/utils';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface GenericXmlCardProps {
   tagName: string;
@@ -74,10 +75,14 @@ export default function GenericXmlCard({ tagName, content, rawContent }: Generic
 
       {/* 内容区域 */}
       <div 
-        className="text-sm whitespace-pre-wrap leading-relaxed"
+        className="text-sm leading-relaxed"
         style={{ color: colors.text.secondary() }}
       >
-        {displayContent}
+        {needsExpansion && !isExpanded ? (
+          <div className="whitespace-pre-wrap">{displayContent}</div>
+        ) : (
+          <MarkdownRenderer content={content} />
+        )}
       </div>
 
       {/* 展开/折叠按钮 */}

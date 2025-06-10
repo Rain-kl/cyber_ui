@@ -10,6 +10,7 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import { ToolParameter } from '@/app/lib/messageParser';
 import { useThemeColors } from '@/themes/utils';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface ToolComponentProps {
     toolName: string;
@@ -78,9 +79,9 @@ export const ToolComponent: React.FC<ToolComponentProps> = ({
                                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 'medium', color: colors.text.status.success() }}>
                                     执行结果：
                                 </Typography>
-                                <Typography variant="body2" sx={{ color: colors.text.status.success() }}>
-                                    {result}
-                                </Typography>
+                                <Box sx={{ color: colors.text.status.success() }}>
+                                    <MarkdownRenderer content={result} />
+                                </Box>
                             </Box>
                         )}
                     </Box>

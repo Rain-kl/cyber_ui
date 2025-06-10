@@ -1,5 +1,3 @@
-import { ThinkingSection } from "@/types/chat";
-
 export interface ToolParameter {
     name: string;
     value: string;
@@ -46,8 +44,6 @@ export function parseMessageContent(rawContent: string): ParsedMessage {
     let isInsideExpert = false;
     let isInsideCalling = false;
     let currentText = "";
-    let currentToolName = "";
-    let currentToolParameters: ToolParameter[] = [];
 
     for (let i = 0; i < parts.length; i++) {
         const part = parts[i];
@@ -77,8 +73,6 @@ export function parseMessageContent(rawContent: string): ParsedMessage {
                 currentText = "";
             }
             isInsideTool = true;
-            currentToolName = "";
-            currentToolParameters = [];
         } else if (part === "</use_tool>") {
             // 完成工具块
             if (isInsideTool) {
@@ -290,6 +284,7 @@ function detectGenericXmlTag(
 }
 
 // 处理通用XML标签的函数
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function processGenericXml(segments: ContentSegment[], content: string) {
     const xmlData = detectGenericXmlTag(content.trim());
     if (xmlData) {

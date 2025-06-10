@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useThemeColors } from '@/themes/utils';
 import { parseMessageContent } from '@/app/lib/messageParser';
 import GenericXmlCard from './GenericXmlCard';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface ExpertCallCardProps {
     expertName: string;
@@ -60,17 +61,15 @@ export default function ExpertCallCard({ expertName, message, output, isComplete
                 {parsedOutput.segments.map((segment, index) => {
                     if (segment.type === 'text') {
                         return (
-                            <Typography 
+                            <Box
                                 key={index} 
-                                variant="body2" 
                                 sx={{ 
                                     color: colors.text.primary(), 
-                                    whiteSpace: 'pre-wrap',
                                     mb: index < parsedOutput.segments.length - 1 ? 1 : 0
                                 }}
                             >
-                                {segment.content}
-                            </Typography>
+                                <MarkdownRenderer content={segment.content} />
+                            </Box>
                         );
                     } else if (segment.type === 'generic_xml') {
                         return (

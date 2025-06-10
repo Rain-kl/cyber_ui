@@ -1,7 +1,7 @@
 import { Message } from '@/types/chat';
 import { copyToClipboard } from '@/app/lib';
 import { parseMessageContent } from '@/app/lib/messageParser';
-import { ErrorCard, ThinkingComponent, ToolComponent, GenericXmlCard, ExpertCallCard } from '@/components';
+import { ErrorCard, ThinkingComponent, ToolComponent, GenericXmlCard, ExpertCallCard, MarkdownRenderer } from '@/components';
 import { useThemeColors } from '@/themes/utils';
 
 interface ChatMessageProps {
@@ -62,8 +62,8 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
         {parsedMessage.segments.map((segment, index) => {
           if (segment.type === 'text') {
             return (
-              <div key={index} className="whitespace-pre-wrap">
-                <p>{segment.content}</p>
+              <div key={index} className="markdown-content">
+                <MarkdownRenderer content={segment.content} />
               </div>
             );
           } else if (segment.type === 'thinking') {
@@ -105,7 +105,7 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
             );
           } else if (segment.type === 'user') {
             return (
-              <p
+              <div
                 key={index}
                 style={{
                   fontSize: '16px',
@@ -115,15 +115,13 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                   padding: '12px 16px',
                   backgroundColor: colors.bg.card(),
                   borderRadius: '8px',
-                  // border: `1px solid ${colors.border.secondary()}`,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   letterSpacing: '0.02em',
                   wordBreak: 'break-word',
-                  whiteSpace: 'pre-wrap'
                 }}
               >
-                {segment.content}
-              </p>
+                <MarkdownRenderer content={segment.content} />
+              </div>
             );
           }
           return null;

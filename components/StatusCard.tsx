@@ -4,6 +4,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useThemeColors } from '@/themes/utils';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface StatusCardProps {
   icon: ReactNode;
@@ -11,9 +12,10 @@ interface StatusCardProps {
   children: ReactNode;
   defaultExpanded?: boolean;
   showExpandText?: boolean;
+  enableMarkdown?: boolean; // 新增属性来控制是否启用 markdown 渲染
 }
 
-export default function StatusCard({ icon, title, children, defaultExpanded = false, showExpandText = false }: StatusCardProps) {
+export default function StatusCard({ icon, title, children, defaultExpanded = false, showExpandText = false, enableMarkdown = false }: StatusCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const colors = useThemeColors();
 
@@ -84,8 +86,12 @@ export default function StatusCard({ icon, title, children, defaultExpanded = fa
             backgroundColor: expanded ? colors.bg.secondary() : 'transparent',
           }}
         >
-          <div className="text-sm whitespace-pre-wrap leading-6" style={{ color: colors.text.muted() }}>
-            {children}
+          <div className="text-sm leading-6" style={{ color: colors.text.muted() }}>
+            {enableMarkdown && typeof children === 'string' ? (
+              <MarkdownRenderer content={children} />
+            ) : (
+              <div className="whitespace-pre-wrap">{children}</div>
+            )}
           </div>
         </AccordionDetails>
       </Accordion>

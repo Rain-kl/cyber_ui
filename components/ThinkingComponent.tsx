@@ -81,6 +81,7 @@ export default function ThinkingComponent({ content, isCompleted }: ThinkingComp
       title={title} 
       defaultExpanded={defaultExpanded}
       showExpandText={showExpandText}
+      enableMarkdown={true}
     >
       {content}
       {!isCompleted && (

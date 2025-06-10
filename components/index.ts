@@ -8,3 +8,4 @@ export { default as ErrorCard } from "./ErrorCard";
 export { default as ThemeToggle } from "../app/ui/ThemeToggle";
 export { default as GenericXmlCard } from "./GenericXmlCard";
 export { default as ExpertCallCard } from "./ExpertCallCard";
+export { default as MarkdownRenderer } from "./MarkdownRenderer";

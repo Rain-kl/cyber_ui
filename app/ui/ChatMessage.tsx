@@ -1,9 +1,7 @@
 import { Message } from '@/types/chat';
-import { copyToClipboard } from '@/utils';
-import { parseMessageContent } from '@/utils/messageParser';
-import ThinkingComponent from './ThinkingComponent';
-import ToolComponent from './ToolComponent';
-import ErrorCard from './ErrorCard';
+import { copyToClipboard } from '@/app/lib';
+import { parseMessageContent } from '@/app/lib/messageParser';
+import { ErrorCard, ThinkingComponent, ToolComponent } from '@/components';
 import { useThemeColors } from '@/themes/utils';
 
 interface ChatMessageProps {

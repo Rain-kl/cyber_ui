@@ -8,7 +8,7 @@ import {
     Chip
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import { ToolParameter } from '@/utils/messageParser';
+import { ToolParameter } from '@/app/lib/messageParser';
 import { useThemeColors } from '@/themes/utils';
 
 interface ToolComponentProps {

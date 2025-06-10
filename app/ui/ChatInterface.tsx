@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useChat } from '@/hooks/useChat';
-import { ChatHeader, ChatMessage, ChatInput } from '@/components';
+import { ChatHeader, ChatInput } from '@/components';
 import TopBar from './TopBar';
 import { useThemeColors } from '@/themes/utils';
+import ChatMessage from './ChatMessage';
 
 interface ChatHistoryRecord {
   role: 'user' | 'assistant';

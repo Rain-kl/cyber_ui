@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { ChatState, Message } from "@/types/chat";
-import { generateId } from "@/utils";
-import { parseMessageContent } from "@/utils/messageParser";
+import { generateId } from "@/app/lib";
+import { parseMessageContent } from "@/app/lib/messageParser";
 
 export function useChat() {
     const [state, setState] = useState<ChatState>({
@@ -34,7 +34,13 @@ export function useChat() {
     );
 
     const updateMessage = useCallback(
-        (messageId: string, content: string, isCompleted?: boolean, isError?: boolean, errorDetails?: string) => {
+        (
+            messageId: string,
+            content: string,
+            isCompleted?: boolean,
+            isError?: boolean,
+            errorDetails?: string,
+        ) => {
             setState((prev) => ({
                 ...prev,
                 messages: prev.messages.map((msg) => {
@@ -67,7 +73,12 @@ export function useChat() {
 
                             return updatedMsg;
                         }
-                        return { ...msg, content, isError: isError || false, errorDetails: errorDetails };
+                        return {
+                            ...msg,
+                            content,
+                            isError: isError || false,
+                            errorDetails: errorDetails,
+                        };
                     }
                     return msg;
                 }),
@@ -160,34 +171,44 @@ export function useChat() {
                 updateMessage(assistantMessageId, streamedContent, true);
             } catch (error) {
                 console.error("OpenAI API 请求失败:", error);
-                
+
                 // 构建用户友好的错误消息
                 let errorMessage = "抱歉，获取回答时出现错误。请稍后重试。";
                 let errorDetails = "";
-                
+
                 if (error instanceof Error) {
                     // 根据错误类型提供更具体的信息
-                    if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
-                        errorMessage = "网络连接失败，请检查您的网络连接后重试。";
-                    } else if (error.message.includes("HTTP error! status: 500")) {
+                    if (
+                        error.message.includes("Failed to fetch") ||
+                        error.message.includes("NetworkError")
+                    ) {
+                        errorMessage =
+                            "网络连接失败，请检查您的网络连接后重试。";
+                    } else if (
+                        error.message.includes("HTTP error! status: 500")
+                    ) {
                         errorMessage = "服务器内部错误，请稍后重试。";
-                    } else if (error.message.includes("HTTP error! status: 401")) {
+                    } else if (
+                        error.message.includes("HTTP error! status: 401")
+                    ) {
                         errorMessage = "身份验证失败，请检查 API 密钥配置。";
-                    } else if (error.message.includes("HTTP error! status: 429")) {
+                    } else if (
+                        error.message.includes("HTTP error! status: 429")
+                    ) {
                         errorMessage = "请求过于频繁，请稍后重试。";
                     }
                     errorDetails = error.message;
                 } else {
                     errorDetails = String(error);
                 }
-                
+
                 // 标记消息为错误状态
                 updateMessage(
                     assistantMessageId,
                     errorMessage,
                     true, // isCompleted
                     true, // isError
-                    errorDetails // errorDetails
+                    errorDetails, // errorDetails
                 );
             } finally {
                 // Clear loading state

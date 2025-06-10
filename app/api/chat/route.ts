@@ -4,7 +4,7 @@ import {
     getCurrentModel,
     isApiKeyConfigured,
     OPENAI_CONFIG,
-} from "@/utils/openai-config";
+} from "@/config/openai-config";
 import { Message } from "@/types/chat";
 
 // 初始化 OpenAI 客户端

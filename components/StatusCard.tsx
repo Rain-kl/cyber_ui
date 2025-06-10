@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -8,12 +8,23 @@ interface StatusCardProps {
   icon: ReactNode;
   title: string;
   children: ReactNode;
+  defaultExpanded?: boolean;
+  showExpandText?: boolean;
 }
 
-export default function StatusCard({ icon, title, children }: StatusCardProps) {
+export default function StatusCard({ icon, title, children, defaultExpanded = false, showExpandText = false }: StatusCardProps) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
+
+  // 当 defaultExpanded 属性变化时，更新本地状态
+  useEffect(() => {
+    setExpanded(defaultExpanded);
+  }, [defaultExpanded]);
+
   return (
     <div className="my-2 w-full">
       <Accordion
+        expanded={expanded}
+        onChange={(_, isExpanded) => setExpanded(isExpanded)}
         disableGutters
         sx={{
           boxShadow: 'none',
@@ -21,7 +32,7 @@ export default function StatusCard({ icon, title, children }: StatusCardProps) {
           borderRadius: '12px !important', // Enhanced rounded corners with !important
           backgroundColor: '#F9F8F4',
           maxWidth: '719px',
-          minHeight: '42px',
+          minHeight: '83px', // 增加高度到83px
           overflow: 'hidden', // Ensure child elements respect border radius
           transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
@@ -44,26 +55,34 @@ export default function StatusCard({ icon, title, children }: StatusCardProps) {
           id="panel1a-header"
           sx={{
             padding: '0.75rem', // Equivalent to p-3
-            minHeight: '42px',
+            minHeight: '83px', // 增加高度到83px
             borderRadius: '12px 12px 0 0', // Top corners rounded
             '& .MuiAccordionSummary-content': {
               margin: 0,
-              alignItems: 'center',
+              alignItems: 'flex-start',
               gap: '0.5rem', // Equivalent to gap-2
+              flexDirection: 'column',
             },
           }}
         >
-          {icon}
-          <span className="text-sm text-gray-500 italic">{title}</span>
+          <div className="flex items-center gap-2 w-full">
+            {icon}
+            <span className="text-base font-bold text-gray-500 italic">{title}</span>
+          </div>
+          {showExpandText && (
+            <span className="text-sm font-bold text-gray-500 italic cursor-pointer">
+              {expanded ? '折叠详情' : '展开详情'}
+            </span>
+          )}
         </AccordionSummary>
         <AccordionDetails
           sx={{
             padding: '0.5rem 0.75rem 0.75rem', // pt-2 px-3 pb-3
-            borderTop: '1px solid #E5E7EB', // border-t border-gray-300
+            borderTop: expanded ? 'none' : '1px solid #E5E7EB', // 展开时去除分割线
             borderRadius: '0 0 12px 12px', // Bottom corners rounded
           }}
         >
-          <div className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed">
+          <div className="text-sm text-gray-600 whitespace-pre-wrap leading-6">
             {children}
           </div>
         </AccordionDetails>

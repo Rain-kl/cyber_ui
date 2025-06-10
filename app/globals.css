@@ -28,6 +28,16 @@ body {
   background: #B8B8B8;
 }
 
+/* Hide scrollbar for ChatInput textarea */
+.custom-textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-textarea {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .chat-message-container {
   max-width: 752px;
   margin-left: auto;

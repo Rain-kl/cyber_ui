@@ -42,6 +42,12 @@ body {
   max-width: 752px;
   margin-left: auto;
   margin-right: auto;
+  height: 100%;
+}
+
+/* 确保初始状态的容器占满全部高度 */
+.chat-message-container .relative.h-full {
+  height: calc(100vh - 4rem); /* 减去顶栏高度 */
 }
 
 .user-avatar {

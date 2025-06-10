@@ -70,7 +70,20 @@ export default function ChatInterface() {
       <div className="flex-1 overflow-y-auto pt-16">
         <div className="chat-message-container">
           {!hasMessages && !showHistoryMessages ? (
-            <ChatHeader />
+            <div className="relative h-full">
+              {/* 打招呼文字放在屏幕上半部分 */}
+              <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-max">
+                <ChatHeader />
+              </div>
+              {/* 输入框放在屏幕中心 */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl px-4">
+                <ChatInput
+                  onSendMessage={sendMessage}
+                  disabled={isLoading}
+                  placeholder="How can I help you today?"
+                />
+              </div>
+            </div>
           ) : (
             <div className="px-4 py-6">
               {/* 显示历史记录或当前对话 */}
@@ -132,15 +145,13 @@ export default function ChatInterface() {
         </div>
       </div>
 
-      {/* Chat Input Area - 只在非历史记录模式下显示 */}
-      {!showHistoryMessages && (
+      {/* Chat Input Area - 只在有消息且非历史记录模式下显示 */}
+      {!showHistoryMessages && hasMessages && (
         <div className="max-w-4xl mx-auto w-full">
           <ChatInput
             onSendMessage={sendMessage}
             disabled={isLoading}
-            placeholder={
-              hasMessages ? 'Reply to Claude...' : 'How can I help you today?'
-            }
+            placeholder="Reply to Claude..."
           />
         </div>
       )}

@@ -96,7 +96,7 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                   padding: '12px 16px',
                   backgroundColor: colors.bg.card(),
                   borderRadius: '8px',
-                  border: `1px solid ${colors.border.secondary()}`,
+                  // border: `1px solid ${colors.border.secondary()}`,
                   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   letterSpacing: '0.02em',
                   wordBreak: 'break-word',

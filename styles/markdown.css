@@ -183,9 +183,39 @@
   max-width: 100%;
   overflow-wrap: break-word;
   word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  /* 强制所有子元素遵循换行规则 */
+  white-space: normal;
 }
 
 .markdown-content * {
   max-width: 100%;
   box-sizing: border-box;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* 特别针对可能包含长文本的元素 */
+.markdown-content p,
+.markdown-content div,
+.markdown-content span,
+.markdown-content strong,
+.markdown-content em,
+.markdown-content a {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  hyphens: auto;
+}
+
+/* 确保表格单元格内容也能正确换行 */
+.markdown-content table,
+.markdown-content th,
+.markdown-content td {
+  table-layout: fixed;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }

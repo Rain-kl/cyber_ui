@@ -40,7 +40,17 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
   const renderContent = () => {
     if (isUser || !parsedMessage) {
       return (
-        <div className="leading-relaxed whitespace-pre-wrap w-full text-center" style={{ fontSize: '15px' }}>
+        <div 
+          className="leading-relaxed whitespace-pre-wrap w-full text-center" 
+          style={{ 
+            fontSize: '15px',
+            maxWidth: '100%',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            wordWrap: 'break-word',
+            hyphens: 'auto',
+          }}
+        >
           {message.content}
         </div>
       );
@@ -58,11 +68,29 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
     }
 
     return (
-      <div className="text-sm leading-relaxed w-full">
+      <div 
+        className="text-sm leading-relaxed w-full"
+        style={{
+          maxWidth: '100%',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          wordWrap: 'break-word',
+          hyphens: 'auto',
+        }}
+      >
         {parsedMessage.segments.map((segment, index) => {
           if (segment.type === 'text') {
             return (
-              <div key={index} className="markdown-content">
+              <div 
+                key={index} 
+                className="markdown-content"
+                style={{
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word',
+                  wordWrap: 'break-word',
+                }}
+              >
                 <MarkdownRenderer content={segment.content} />
               </div>
             );
@@ -118,6 +146,10 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
                   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   letterSpacing: '0.02em',
                   wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  wordWrap: 'break-word',
+                  maxWidth: '100%',
+                  hyphens: 'auto',
                 }}
               >
                 <MarkdownRenderer content={segment.content} />
@@ -152,9 +184,25 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
         </div>
       ) : (
         // Assistant message layout
-        <div>
+        <div 
+          style={{
+            maxWidth: '100%',
+            overflowWrap: 'break-word',
+            wordBreak: 'break-word',
+            wordWrap: 'break-word',
+          }}
+        >
           <div className="flex items-start gap-3">
-            <div className="flex-1">
+            <div 
+              className="flex-1"
+              style={{
+                maxWidth: '100%',
+                overflowWrap: 'break-word',
+                wordBreak: 'break-word',
+                wordWrap: 'break-word',
+                minWidth: 0, // 允许flex项目收缩到内容以下
+              }}
+            >
               {renderContent()}
             </div>
           </div>

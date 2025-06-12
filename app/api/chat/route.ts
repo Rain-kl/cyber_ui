@@ -10,8 +10,7 @@ import { Message } from "@/types/chat";
 // 初始化 OpenAI 客户端
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    baseURL: "http://localhost:6898/v1",
-    // ||process.env.OPENAI_BASE_URL
+    baseURL: process.env.OPENAI_BASE_URL || "http://localhost:6898/v1",
 });
 
 export async function POST(request: NextRequest) {

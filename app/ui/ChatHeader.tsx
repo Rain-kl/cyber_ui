@@ -13,7 +13,19 @@ export default function ChatHeader({
   subtitle = 'How can I help you today?',
 }: ChatHeaderProps) {
   const [greeting, setGreeting] = useState('Good evening');
+  const [isMobile, setIsMobile] = useState(false);
   const colors = useThemeColors();
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -37,14 +49,25 @@ export default function ChatHeader({
   }, []);
 
   return (
-    <div className="text-center px-8">
-      <h1 className="font-normal mb-4 whitespace-nowrap" style={{ 
-        fontSize: '40px',
-        color: colors.text.primary()
-      }}>
+    <div className={`text-center ${isMobile ? 'px-4' : 'px-8'}`}>
+      <h1 
+        className={`font-normal mb-4 ${isMobile ? '' : 'whitespace-nowrap'}`} 
+        style={{ 
+          fontSize: isMobile ? '28px' : '40px',
+          color: colors.text.primary(),
+          lineHeight: isMobile ? '1.2' : '1'
+        }}
+      >
         {title || greeting}, User
       </h1>
-      {subtitle && <p className="text-lg" style={{ color: colors.text.secondary() }}>{subtitle}</p>}
+      {subtitle && (
+        <p 
+          className={isMobile ? 'text-base' : 'text-lg'} 
+          style={{ color: colors.text.secondary() }}
+        >
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

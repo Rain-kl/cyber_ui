@@ -27,7 +27,20 @@ export default function ChatInterface() {
   const [showHistoryMessages, setShowHistoryMessages] = useState(false);
   const [historyMessages, setHistoryMessages] = useState<HistoryMessage[]>([]);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const colors = useThemeColors();
+
+  // 检测是否为移动设备
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   // 检查是否在底部的函数
   const isScrolledToBottom = () => {
@@ -111,7 +124,14 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen" style={{ backgroundColor: colors.bg.primary() }}>
+    <div 
+      className="flex flex-col h-screen" 
+      style={{ 
+        backgroundColor: colors.bg.primary(),
+        maxWidth: '100vw',
+        overflowX: 'hidden'
+      }}
+    >
       {/* 顶栏 */}
       <TopBar 
         onHistoryLoaded={handleHistoryLoaded} 
@@ -123,22 +143,30 @@ export default function ChatInterface() {
       <div 
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto pt-16"
+        style={{ overflowX: 'hidden' }}
         onScroll={handleScroll}
       >
-        <div className="chat-message-container">
+        <div className="chat-message-container" style={{ overflowX: 'hidden' }}>
           {!hasMessages && !showHistoryMessages ? (
-            <div className="relative h-full">
-              {/* 打招呼文字放在屏幕上半部分 */}
-              <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-max">
+            <div className="flex flex-col items-center h-full" style={{ 
+              justifyContent: 'flex-start',
+              paddingTop: isMobile ? '13vh' : '18vh'
+            }}>
+              {/* 招呼文字 */}
+              <div className={`${isMobile ? 'w-full px-4' : 'w-max'}`}>
                 <ChatHeader />
               </div>
-              {/* 输入框放在屏幕中心，向上移动40px */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl px-4" style={{ top: 'calc(50% - 40px)' }}>
+              
+              {/* 间距 */}
+              <div style={{ height: '30px' }}></div>
+              
+              {/* 输入框 */}
+              <div className={`w-full max-w-4xl ${isMobile ? 'px-2' : 'px-4'}`}>
                 <ChatInput
                   onSendMessage={sendMessage}
                   disabled={isLoading}
                   isLoading={isLoading}
-                  placeholder="How can I help you today?"
+                  placeholder="询问任何问题"
                 />
               </div>
             </div>
@@ -216,12 +244,17 @@ export default function ChatInterface() {
 
       {/* Chat Input Area - 只在有消息且非历史记录模式下显示 */}
       {!showHistoryMessages && hasMessages && (
-        <div className="max-w-4xl mx-auto w-full">
+        <div 
+          className="max-w-4xl mx-auto w-full"
+          style={{
+            paddingBottom: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : undefined
+          }}
+        >
           <ChatInput
             onSendMessage={sendMessage}
             disabled={isLoading}
             isLoading={isLoading}
-            placeholder="Reply to Claude..."
+            placeholder="Reply..."
           />
         </div>
       )}

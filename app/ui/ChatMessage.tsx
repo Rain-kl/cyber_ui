@@ -41,7 +41,7 @@ export default function ChatMessage({ message, onRetry, isLoading = false }: Cha
     if (isUser || !parsedMessage) {
       return (
         <div 
-          className="leading-relaxed whitespace-pre-wrap w-full text-center" 
+          className="leading-relaxed whitespace-pre-wrap w-full text-left" 
           style={{ 
             fontSize: '15px',
             maxWidth: '100%',

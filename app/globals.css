@@ -74,6 +74,67 @@ html {
   background: var(--scrollbar-thumb-hover);
 }
 
+/* 自定义滚动条样式 - 默认隐藏，滚动时显示 */
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* 滚动条可见状态 */
+.custom-scrollbar.scrollbar-visible {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.custom-scrollbar.scrollbar-visible::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.custom-scrollbar.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+.custom-scrollbar.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* 鼠标悬停时也显示滚动条 */
+.custom-scrollbar:hover {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
 /* Hide scrollbar for ChatInput textarea */
 .custom-textarea::-webkit-scrollbar {
   display: none;

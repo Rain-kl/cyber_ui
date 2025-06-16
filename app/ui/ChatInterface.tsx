@@ -28,6 +28,8 @@ export default function ChatInterface() {
   const [historyMessages, setHistoryMessages] = useState<HistoryMessage[]>([]);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isScrollbarVisible, setIsScrollbarVisible] = useState(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const colors = useThemeColors();
 
   // 检测是否为移动设备
@@ -42,6 +44,15 @@ export default function ChatInterface() {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
+  // 清理滚动定时器
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // 检查是否在底部的函数
   const isScrolledToBottom = () => {
     const container = scrollContainerRef.current;
@@ -54,6 +65,19 @@ export default function ChatInterface() {
   // 滚动事件处理
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
+    
+    // 显示滚动条
+    setIsScrollbarVisible(true);
+    
+    // 清除之前的定时器
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    // 设置新的定时器，滚动停止1.5秒后隐藏滚动条
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrollbarVisible(false);
+    }, 1500);
     
     // 如果用户滚动到底部，启用自动滚动
     if (isScrolledToBottom()) {
@@ -142,8 +166,10 @@ export default function ChatInterface() {
       {/* Chat Messages Area - 添加顶部填充以避免被固定顶栏遮挡 */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto pt-16"
-        style={{ overflowX: 'hidden' }}
+        className={`flex-1 overflow-y-auto pt-16 custom-scrollbar ${isScrollbarVisible ? 'scrollbar-visible' : ''}`}
+        style={{ 
+          overflowX: 'hidden'
+        }}
         onScroll={handleScroll}
       >
         <div className="chat-message-container" style={{ overflowX: 'hidden' }}>

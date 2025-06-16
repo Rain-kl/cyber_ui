@@ -146,10 +146,7 @@ html {
 }
 
 .chat-message-container {
-  max-width: 752px;
-  margin-left: auto;
-  margin-right: auto;
-  height: 100%;
+  /* 移除之前的样式，现在使用页面级别滚动 */
 }
 
 /* 确保初始状态的容器占满全部高度 */

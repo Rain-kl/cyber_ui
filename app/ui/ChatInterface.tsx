@@ -28,7 +28,6 @@ export default function ChatInterface() {
   const [historyMessages, setHistoryMessages] = useState<HistoryMessage[]>([]);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isScrollbarVisible, setIsScrollbarVisible] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const colors = useThemeColors();
 
@@ -44,12 +43,14 @@ export default function ChatInterface() {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
-  // 清理滚动定时器
+  // 清理滚动定时器和body类名
   useEffect(() => {
     return () => {
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
+      // 清理body上的滚动条类名
+      document.body.classList.remove('scrollbar-visible');
     };
   }, []);
 
@@ -64,20 +65,26 @@ export default function ChatInterface() {
 
   // 滚动事件处理
   const handleScroll = () => {
-    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
     
-    // 显示滚动条
-    setIsScrollbarVisible(true);
+    // 检查滚动条是否应该显示
+    const hasScroll = container.scrollHeight > container.clientHeight;
     
-    // 清除之前的定时器
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
+    if (hasScroll) {
+      // 添加滚动条可见类到body元素
+      document.body.classList.add('scrollbar-visible');
+      
+      // 清除之前的定时器
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // 设置新的定时器，滚动停止1.5秒后隐藏滚动条
+      scrollTimeoutRef.current = setTimeout(() => {
+        document.body.classList.remove('scrollbar-visible');
+      }, 1500);
     }
-    
-    // 设置新的定时器，滚动停止1.5秒后隐藏滚动条
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrollbarVisible(false);
-    }, 1500);
     
     // 如果用户滚动到底部，启用自动滚动
     if (isScrolledToBottom()) {
@@ -148,56 +155,53 @@ export default function ChatInterface() {
   };
 
   return (
-    <div 
-      className="flex flex-col h-screen" 
-      style={{ 
-        backgroundColor: colors.bg.primary(),
-        maxWidth: '100vw',
-        overflowX: 'hidden'
-      }}
-    >
-      {/* 顶栏 */}
-      <TopBar 
-        onHistoryLoaded={handleHistoryLoaded} 
-        showHistoryMessages={showHistoryMessages}
-        onReturnToChat={handleReturnToChat}
-      />
-      
-      {/* Chat Messages Area - 添加顶部填充以避免被固定顶栏遮挡 */}
+    <>
+      {/* 固定的顶栏 */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <TopBar 
+          onHistoryLoaded={handleHistoryLoaded} 
+          showHistoryMessages={showHistoryMessages}
+          onReturnToChat={handleReturnToChat}
+        />
+      </div>
+
+      {/* 主要内容区域 - 页面级别滚动 */}
       <div 
         ref={scrollContainerRef}
-        className={`flex-1 overflow-y-auto pt-16 custom-scrollbar ${isScrollbarVisible ? 'scrollbar-visible' : ''}`}
+        className="min-h-screen pt-16 custom-scrollbar"
         style={{ 
+          backgroundColor: colors.bg.primary(),
           overflowX: 'hidden'
         }}
         onScroll={handleScroll}
       >
-        <div className="chat-message-container" style={{ overflowX: 'hidden' }}>
-          {!hasMessages && !showHistoryMessages ? (
-            <div className="flex flex-col items-center h-full" style={{ 
-              justifyContent: 'flex-start',
-              paddingTop: isMobile ? '13vh' : '18vh'
-            }}>
-              {/* 招呼文字 */}
-              <div className={`${isMobile ? 'w-full px-4' : 'w-max'}`}>
-                <ChatHeader />
-              </div>
-              
-              {/* 间距 */}
-              <div style={{ height: '30px' }}></div>
-              
-              {/* 输入框 */}
-              <div className={`w-full max-w-4xl ${isMobile ? 'px-2' : 'px-4'}`}>
-                <ChatInput
-                  onSendMessage={sendMessage}
-                  disabled={isLoading}
-                  isLoading={isLoading}
-                  placeholder="询问任何问题"
-                />
-              </div>
+        {!hasMessages && !showHistoryMessages ? (
+          <div className="flex flex-col items-center min-h-[calc(100vh-4rem)]" style={{ 
+            justifyContent: 'flex-start',
+            paddingTop: isMobile ? '13vh' : '18vh'
+          }}>
+            {/* 招呼文字 */}
+            <div className={`${isMobile ? 'w-full px-4' : 'w-max'}`}>
+              <ChatHeader />
             </div>
-          ) : (
-            <div className="px-4 py-6">
+            
+            {/* 间距 */}
+            <div style={{ height: '30px' }}></div>
+            
+            {/* 输入框 */}
+            <div className={`w-full max-w-4xl ${isMobile ? 'px-2' : 'px-4'}`}>
+              <ChatInput
+                onSendMessage={sendMessage}
+                disabled={isLoading}
+                isLoading={isLoading}
+                placeholder="询问任何问题"
+              />
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* 对话内容区域 - 限制宽度但允许页面级别滚动 */}
+            <div className="max-w-[752px] mx-auto px-4 py-6">
               {/* 显示历史记录或当前对话 */}
               {showHistoryMessages ? (
                 <>
@@ -264,26 +268,26 @@ export default function ChatInterface() {
 
               <div ref={messagesEndRef} />
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Chat Input Area - 只在有消息且非历史记录模式下显示 */}
-      {!showHistoryMessages && hasMessages && (
-        <div 
-          className="max-w-4xl mx-auto w-full"
-          style={{
-            paddingBottom: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : undefined
-          }}
-        >
-          <ChatInput
-            onSendMessage={sendMessage}
-            disabled={isLoading}
-            isLoading={isLoading}
-            placeholder="Reply..."
-          />
-        </div>
-      )}
-    </div>
+            {/* Chat Input Area - 只在有消息且非历史记录模式下显示 */}
+            {!showHistoryMessages && (
+              <div 
+                className="max-w-4xl mx-auto w-full px-4 pb-6"
+                style={{
+                  paddingBottom: isMobile ? 'max(24px, env(safe-area-inset-bottom))' : '24px'
+                }}
+              >
+                <ChatInput
+                  onSendMessage={sendMessage}
+                  disabled={isLoading}
+                  isLoading={isLoading}
+                  placeholder="Reply..."
+                />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 }

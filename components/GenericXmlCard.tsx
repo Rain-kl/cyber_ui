@@ -25,12 +25,14 @@ export default function GenericXmlCard({ tagName, content, rawContent }: Generic
 
   return (
     <div 
-      className="my-2 p-4 border rounded-lg transition-all duration-200"
+      className="my-2 p-4 border rounded-lg transition-all duration-200 max-w-full"
       style={{
         backgroundColor: colors.bg.card(),
         borderColor: colors.border.primary(),
         borderLeftWidth: '4px',
         borderLeftColor: colors.text.primary(),
+        boxSizing: 'border-box',
+        overflow: 'hidden'
       }}
     >
       {/* 标题区域 */}
@@ -75,8 +77,12 @@ export default function GenericXmlCard({ tagName, content, rawContent }: Generic
 
       {/* 内容区域 */}
       <div 
-        className="text-sm leading-relaxed"
-        style={{ color: colors.text.secondary() }}
+        className="text-sm leading-relaxed max-w-full overflow-hidden"
+        style={{ 
+          color: colors.text.secondary(),
+          wordWrap: 'break-word',
+          overflowWrap: 'break-word'
+        }}
       >
         {needsExpansion && !isExpanded ? (
           <div className="whitespace-pre-wrap">{displayContent}</div>
@@ -120,16 +126,26 @@ export default function GenericXmlCard({ tagName, content, rawContent }: Generic
           >
             原始XML（开发调试）
           </summary>
-          <pre 
-            className="mt-2 p-2 text-xs rounded overflow-x-auto"
+          <div 
+            className="mt-2 p-2 text-xs rounded max-w-full overflow-hidden"
             style={{ 
               backgroundColor: colors.bg.surface(),
               color: colors.text.muted(),
-              fontFamily: 'monospace'
             }}
           >
-            {rawContent}
-          </pre>
+            <pre 
+              className="whitespace-pre-wrap break-words font-mono text-xs"
+              style={{
+                margin: 0,
+                maxWidth: '100%',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word',
+                whiteSpace: 'pre-wrap'
+              }}
+            >
+              {rawContent}
+            </pre>
+          </div>
         </details>
       )}
     </div>

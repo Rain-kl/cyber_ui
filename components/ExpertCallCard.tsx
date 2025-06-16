@@ -73,7 +73,18 @@ export default function ExpertCallCard({ expertName, message, output, isComplete
                         );
                     } else if (segment.type === 'generic_xml') {
                         return (
-                            <Box key={index} sx={{ my: 1 }}>
+                            <Box 
+                                key={index} 
+                                sx={{ 
+                                    my: 1,
+                                    maxWidth: '100%',
+                                    overflow: 'hidden',
+                                    '& > *': {
+                                        maxWidth: '100%',
+                                        boxSizing: 'border-box'
+                                    }
+                                }}
+                            >
                                 <GenericXmlCard
                                     tagName={segment.xmlTagName || '未知标签'}
                                     content={segment.xmlContent || ''}

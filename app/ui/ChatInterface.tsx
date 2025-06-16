@@ -43,6 +43,15 @@ export default function ChatInterface() {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
+  // 监听页面滚动事件
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   // 清理滚动定时器和body类名
   useEffect(() => {
     return () => {
@@ -56,20 +65,14 @@ export default function ChatInterface() {
 
   // 检查是否在底部的函数
   const isScrolledToBottom = () => {
-    const container = scrollContainerRef.current;
-    if (!container) return false;
-    
     const threshold = 50; // 允许50px的误差范围
-    return container.scrollHeight - container.scrollTop - container.clientHeight <= threshold;
+    return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - threshold;
   };
 
   // 滚动事件处理
   const handleScroll = () => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    
     // 检查滚动条是否应该显示
-    const hasScroll = container.scrollHeight > container.clientHeight;
+    const hasScroll = document.documentElement.scrollHeight > window.innerHeight;
     
     if (hasScroll) {
       // 添加滚动条可见类到body元素
@@ -171,9 +174,9 @@ export default function ChatInterface() {
         className="min-h-screen pt-16 custom-scrollbar"
         style={{ 
           backgroundColor: colors.bg.primary(),
-          overflowX: 'hidden'
+          overflowX: 'hidden',
+          paddingBottom: hasMessages && !showHistoryMessages ? '100px' : '0px' // 为固定输入框留出空间
         }}
-        onScroll={handleScroll}
       >
         {!hasMessages && !showHistoryMessages ? (
           <div className="flex flex-col items-center min-h-[calc(100vh-4rem)]" style={{ 
@@ -268,26 +271,29 @@ export default function ChatInterface() {
 
               <div ref={messagesEndRef} />
             </div>
-
-            {/* Chat Input Area - 只在有消息且非历史记录模式下显示 */}
-            {!showHistoryMessages && (
-              <div 
-                className="max-w-4xl mx-auto w-full px-4 pb-6"
-                style={{
-                  paddingBottom: isMobile ? 'max(24px, env(safe-area-inset-bottom))' : '24px'
-                }}
-              >
-                <ChatInput
-                  onSendMessage={sendMessage}
-                  disabled={isLoading}
-                  isLoading={isLoading}
-                  placeholder="Reply..."
-                />
-              </div>
-            )}
           </>
         )}
       </div>
+
+      {/* 悬浮的输入框 - 只在有消息且非历史记录模式下显示 */}
+      {hasMessages && !showHistoryMessages && (
+        <div 
+          className="fixed bottom-0 left-0 right-0 z-40"
+          style={{
+            background: 'transparent', // 完全透明背景
+            paddingBottom: isMobile ? 'max(16px, env(safe-area-inset-bottom))' : '16px'
+          }}
+        >
+          <div className="max-w-4xl mx-auto w-full px-4">
+            <ChatInput
+              onSendMessage={sendMessage}
+              disabled={isLoading}
+              isLoading={isLoading}
+              placeholder="Reply..."
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }

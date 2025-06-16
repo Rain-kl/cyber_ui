@@ -65,7 +65,7 @@ export default function ChatInput({
     <div 
       className={`flex items-end justify-center ${isMobile ? 'p-2 pb-4' : 'p-2'}`} 
       style={{ 
-        backgroundColor: colors.bg.primary(),
+        backgroundColor: 'transparent', // 移除背景色，让它真正悬浮
         paddingBottom: isMobile ? 'max(16px, env(safe-area-inset-bottom))' : undefined
       }}
     >
